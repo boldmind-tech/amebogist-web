@@ -1,0 +1,21 @@
+{
+  "name": "AmeboGist",
+  "short_name": "AmeboGist",
+  "description": "Amebo wey make sense, gist wey fit change your level!",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#00A859",
+  "theme_color": "#FFC800",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
