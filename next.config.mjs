@@ -10,6 +10,13 @@ const nextConfig = {
     '@boldmind-tech/utils',
   ],
 
+  // @boldmind-tech/auth@4.0.0 exports point to index.mjs but ships index.js
+  turbopack: {
+    resolveAlias: {
+      '@boldmind-tech/auth': './node_modules/@boldmind-tech/auth/dist/index.js',
+    },
+  },
+
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**' },
