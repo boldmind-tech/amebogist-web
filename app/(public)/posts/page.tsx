@@ -46,7 +46,7 @@ async function fetchPosts(category: string, sort: string, page: number) {
 
     return {
       posts: articles.map((post: any) => ({
-        _id:       post._id,
+        _id:       post._id || post.id,
         title:     post.title,
         excerpt:
           post.excerpt ??
@@ -56,11 +56,15 @@ async function fetchPosts(category: string, sort: string, page: number) {
         category:
           typeof post.category === 'string'
             ? { name: post.category, slug: post.category.toLowerCase() }
-            : post.category,
-        author:    post.author,
-        imageUrl:  post.imageUrl ?? '/og-image.png',
+            : (post.category ?? { name: 'Gist', slug: 'gist' }),
+        author: {
+          id:     post.author?.id ?? '',
+          name:   post.author?.fullName || post.author?.name || 'Amebo Master',
+          avatar: post.author?.avatar,
+        },
+        imageUrl:  post.coverImage || post.imageUrl || '/placeholder.svg',
         slug:      post.slug,
-        views:     post.views ?? post.engagement?.views ?? 0,
+        views:     post.viewCount ?? post.views ?? post.engagement?.views ?? 0,
         createdAt: post.createdAt,
       })),
       total,

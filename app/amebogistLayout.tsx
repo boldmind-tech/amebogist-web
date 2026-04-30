@@ -1,7 +1,3 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// apps/amebogist/app/amebogistLayout.tsx
-// ─────────────────────────────────────────────────────────────────────────────
-
 'use client';
 
 import { ReactNode } from 'react';
@@ -15,14 +11,14 @@ interface AmebogistLayoutProps {
 const AMEBOGIST_THEME: ProductThemeType = {
   slug: 'amebogist',
   name: 'AmeboGist',
-  description: 'Nigerian news, entertainment, sports, and lifestyle',
+  description: 'Hot gist, breaking news, AI & Tech, Politics, Entertainment — in Pidgin English wey make sense. Trusted by 12,000+ Nigerian hustlers.',
   icon: '📰',
   status: 'LIVE',
   colors: {
-    primary:    '#DC2626',   // red — news/media energy
-    secondary:  '#F97316',   // orange accent
-    accent:     '#EF4444',   // lighter red for hover states
-    background: '#FAFAFA',
+   primary: '#065F46', 
+    secondary: '#DC2626', 
+    accent: '#0891B2',
+    background: '#FFFBEB', 
   },
 };
 

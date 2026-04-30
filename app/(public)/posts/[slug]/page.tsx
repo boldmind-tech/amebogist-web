@@ -63,14 +63,14 @@ export default async function PostPage({ params }: PostPageProps) {
 
     let comments: AmebogistComment[] = [];
     try {
-        const commentsRes = await amebogistAPI.articles.getComments(post.id);
+        const commentsRes = await amebogistAPI.articles.getComments(post._id);
         comments = commentsRes.data || [];
     } catch {
         // comments are non-critical — page still renders without them
     }
 
     const relatedPosts = (trendingPostsRes.data || [])
-        .filter((p: any) => p.id !== post.id)
+        .filter((p: any) => (p._id || p.id) !== (post._id || (post as any).id))
         .slice(0, 3);
 
     const navLinks = [
@@ -81,39 +81,11 @@ export default async function PostPage({ params }: PostPageProps) {
         })),
     ];
 
-    const footerSections = [
-        {
-            title: "Navigation",
-            links: [
-                { href: "/", label: "Home" },
-                ...categories.filter((cat: any) => cat.slug).map((cat:any) => ({
-                    href: `/category/${cat.slug}`,
-                    label: cat.name,
-                })),
-            ],
-        },
-        {
-            title: "Support",
-            links: [
-                { href: "mailto:hello@boldmind.ng", label: "Email Us" },
-                { href: "https://wa.me/2349138349271", label: "WhatsApp Support", isExternal: true },
-            ],
-        },
-    ];
+  
 
     return (
         <div className="min-h-screen bg-white">
-            <SuperNavbar
-                links={navLinks}
-                cta={{
-                    href: "https://boldmind.ng",
-                    label: "Explore Ecosystem",
-                    variant: "secondary",
-                }}
-                logoSrc="/logo.png"
-                sticky={true}
-                animated={true}
-            />
+         
 
             <main className="pt-32 pb-24">
                 <div className="container mx-auto px-4 max-w-4xl">
@@ -168,7 +140,7 @@ export default async function PostPage({ params }: PostPageProps) {
                     {/* Featured Image */}
                     <div className="relative rounded-[3rem] overflow-hidden h-[400px] md:h-[600px] mb-16 shadow-2xl border border-gray-100">
                         <Image
-                            src={post.coverImage || "/placeholder.svg"}
+                            src={(post as any).coverImage || (post as any).imageUrl || "/placeholder.svg"}
                             alt={post.title}
                             fill
                             sizes="100vw"
@@ -342,17 +314,6 @@ export default async function PostPage({ params }: PostPageProps) {
                 )}
             </main>
 
-            <SuperFooter
-                logoSrc="/logo.png"
-                sections={footerSections}
-                contactInfo={{
-                    email: 'hello@boldmind.ng',
-                    phone: '+2349138349271',
-                    whatsapp: '+2349138349271',
-                    address: 'No 5 Olusoji imole str ikosi ketu Lagos Nigeria',
-                }}
-                copyright={`© ${new Date().getFullYear()} BoldMind Technology Solution Enterprise. All rights reserved.`}
-            />
         </div>
     );
 }

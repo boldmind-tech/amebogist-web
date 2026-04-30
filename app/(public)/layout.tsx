@@ -6,7 +6,7 @@ import { SuperNavbar, SuperFooter, ThemeProvider } from '@boldmind-tech/ui';
 const AMEBOGIST_THEME = {
   slug: 'amebogist', name: 'AmeboGist', description: 'Nigerian news and creator platform',
   icon: '📰', status: 'LIVE' as const,
-  colors: { primary: '#DC2626', secondary: '#F97316', accent: '#EF4444', background: '#FAFAFA' },
+  colors: { primary: '#065F46', secondary: '#DC2626', accent: '#065F46', background: '#FFFBEB' },
 };
 
 const NAV_LINKS = [

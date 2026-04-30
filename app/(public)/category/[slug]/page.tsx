@@ -17,7 +17,7 @@ async function fetchCategories(): Promise<AmebogistCategory[]> {
     try {
         const response = await amebogistAPI.getCategories();
         return (response.data || []).map((cat) => ({
-            _id: cat.id,
+            id: cat.id,
             name: cat.name,
             slug: cat.slug,
         }));
@@ -36,16 +36,20 @@ async function fetchPosts(params: any = {}) {
 
         return {
             posts: articles.map((post: any) => ({
-                _id: post._id,
+                _id: post._id || post.id,
                 title: post.title,
-                excerpt: post.excerpt || (typeof post.content === 'string' ? post.content.substring(0, 160) : post.content.pidgin.substring(0, 160)) + "...",
+                excerpt: post.excerpt || (typeof post.content === 'string' ? post.content.substring(0, 160) : (post.content?.pidgin ?? '').substring(0, 160)) + "...",
                 category: typeof post.category === 'string'
                     ? { name: post.category, slug: post.category.toLowerCase() }
-                    : post.category,
-                author: post.author,
-                imageUrl: post.imageUrl || "/placeholder.svg",
+                    : (post.category ?? { name: 'Gist', slug: 'gist' }),
+                author: {
+                    id:     post.author?.id ?? '',
+                    name:   post.author?.fullName || post.author?.name || 'Amebo Master',
+                    avatar: post.author?.avatar,
+                },
+                imageUrl: post.coverImage || post.imageUrl || "/placeholder.svg",
                 slug: post.slug,
-                views: post.views || post.engagement?.views || 0,
+                views: post.viewCount ?? post.views ?? post.engagement?.views ?? 0,
                 createdAt: post.createdAt,
             })),
             total,
@@ -105,17 +109,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
     return (
         <div className="min-h-screen bg-white">
-            <SuperNavbar
-                links={navLinks}
-                cta={{
-                    href: "https://boldmind.ng",
-                    label: "Explore Ecosystem",
-                    variant: "secondary",
-                }}
-                logoSrc="/logo.png"
-                sticky={true}
-                animated={true}
-            />
+          
 
             <main className="container mx-auto px-4 py-12 max-w-7xl pt-32">
                 <header className="mb-16 text-center">
@@ -215,17 +209,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                 </div>
             </main>
 
-            <SuperFooter
-                logoSrc="/logo.png"
-                sections={footerSections}
-                contactInfo={{
-                    email: 'hello@boldmind.ng',
-                    phone: '+2349138349271',
-                    whatsapp: '+2349138349271',
-                    address: 'No 5 Olusoji imole str ikosi ketu Lagos Nigeria',
-                }}
-                copyright={`© ${new Date().getFullYear()} BoldMind Technology Solution Enterprise. All rights reserved.`}
-            />
+          
         </div>
     );
 }

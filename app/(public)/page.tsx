@@ -1,81 +1,132 @@
-// apps/amebogist/app/(public)/page.tsx  [Server Component — ISR]
-// ─────────────────────────────────────────────────────────────────────────────
-// CORRECTIONS FROM PASTE:
-//   1. SuperNavbar / SuperFooter → REMOVED (come from layout.tsx wrapper)
-//   2. Direct fetch() calls → boldMindAPI / amebogistAPI from api-adapters
-//   3. Hardcoded colors → all via CSS variables (var(--product-primary) etc.)
-//   4. `amebogistAPI.getCategories()` and `amebogistAPI.articles.list()` use
-//      the real endpoint client — not raw fetch
-//   5. Kept ISR revalidate = 60 (news site — must stay fresh)
-//   6. Inline UI components (Button, PostCard etc.) left as-is since they are
-//      app-local components, not from @boldmind/ui
-// ─────────────────────────────────────────────────────────────────────────────
+// app/(public)/page.tsx  [Server Component — ISR]
 
 import Link from 'next/link';
-import { Brain, Zap, Users, Target, TrendingUp, Mail, Sparkles, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
+import { Eye, ChevronRight, ArrowRight, Flame } from 'lucide-react';
 
-// App-local components (unchanged from paste)
-import { Button }           from '../../components/ui/button';
-import SearchBar            from '../../components/SearchBar';
-import NewsletterForm       from '../../components/NewsletterForm';
-import PostCard             from '../../components/PostCard';
-import TrendingCarousel     from '../../components/TrendingCarousel';
-import PopularPosts         from '../../components/PopularPosts';
-import AdBanner             from '../../components/AdBanner';
-
-// API client
-import { amebogistAPI }     from '../../lib/api';   // your app-local api adapter
-
+import PostCard        from '../../components/PostCard';
+import NewsletterForm  from '../../components/NewsletterForm';
+import CookieBar       from '../../components/CookieBar';
+import { amebogistAPI } from '../../lib/api';
 import type { AmebogistCategory } from '../../types/index';
 
-export const revalidate = 60; // ISR — news site
+export const revalidate = 60;
 
-// ─── Data fetchers (server-side) ─────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type NormalizedPost = {
+  _id: string;
+  title: string;
+  excerpt: string;
+  slug: string;
+  category: { name: string; slug: string };
+  author: { id: string; name: string; avatar?: string };
+  imageUrl: string;
+  views: number;
+  createdAt: string;
+};
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function normalizePost(p: any): NormalizedPost {
+  return {
+    _id:      p._id || p.id,
+    title:    p.title,
+    excerpt:  p.excerpt
+      ?? (typeof p.content === 'string'
+          ? p.content.slice(0, 160)
+          : p.content?.pidgin?.slice(0, 160) ?? '') + '…',
+    slug:     p.slug,
+    category: typeof p.category === 'string'
+      ? { name: p.category, slug: p.category.toLowerCase() }
+      : (p.category ?? { name: 'Gist', slug: 'gist' }),
+    author: {
+      id:     p.author?.id ?? '',
+      name:   p.author?.fullName || p.author?.name || 'Amebo Master',
+      avatar: p.author?.avatar,
+    },
+    // API Article type uses coverImage; fallback chain covers legacy imageUrl field
+    imageUrl:  p.coverImage || p.imageUrl || '/placeholder.svg',
+    views:     p.viewCount ?? p.views ?? p.engagement?.views ?? 0,
+    createdAt: p.createdAt,
+  };
+}
+
+// ─── Data fetchers ────────────────────────────────────────────────────────────
 
 async function fetchCategories(): Promise<AmebogistCategory[]> {
   try {
-    const response = await amebogistAPI.getCategories();
-    return response.data ?? [];
-  } catch (err) {
-    console.error('[amebogist/page] fetchCategories:', err);
+    const res = await amebogistAPI.getCategories();
+    return res.data ?? [];
+  } catch {
     return [];
   }
 }
 
-async function fetchPosts(params: Record<string, unknown> = {}) {
+async function fetchLatestPosts(limit = 9, skip = 0, category = '') {
   try {
-    const response = await amebogistAPI.articles.list(params);
-    const articles = response.data ?? [];
-    const total    = response.meta?.total ?? articles.length;
-
-    return {
-      posts: articles.map((post: any) => ({
-        _id:         post._id,
-        title:       post.title,
-        excerpt:
-          post.excerpt ??
-          (typeof post.content === 'string'
-            ? post.content.substring(0, 160)
-            : post.content?.pidgin?.substring(0, 160) ?? '') + '…',
-        category:
-          typeof post.category === 'string'
-            ? { name: post.category, slug: post.category.toLowerCase() }
-            : post.category,
-        author:      post.author,
-        imageUrl:    post.imageUrl ?? '/placeholder.svg',
-        slug:        post.slug,
-        views:       post.views ?? post.engagement?.views ?? 0,
-        createdAt:   post.createdAt,
-        source:      'api',
-        isSponsored: false,
-      })),
-      total,
-    };
-  } catch (err) {
-    console.error('[amebogist/page] fetchPosts:', err);
-    return { posts: [], total: 0 };
+    const params: Record<string, unknown> = { limit, skip };
+    if (category) params.category = category;
+    const res = await amebogistAPI.articles.list(params as any);
+    return (res.data ?? []).map(normalizePost);
+  } catch {
+    return [];
   }
 }
+
+async function fetchFeaturedPost(): Promise<NormalizedPost | null> {
+  try {
+    const res = await amebogistAPI.articles.getFeatured();
+    const items: any[] = Array.isArray(res.data)
+      ? res.data
+      : res.data ? [res.data] : [];
+    return items[0] ? normalizePost(items[0]) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchTrending(limit = 5): Promise<NormalizedPost[]> {
+  try {
+    const res = await amebogistAPI.articles.getTrending(limit);
+    return (res.data ?? []).map(normalizePost);
+  } catch {
+    return [];
+  }
+}
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const TRENDING_TAGS = ['#Tinubu', '#Afrobeats', '#AI Tools', '#JAMB', '#Naira'];
+
+const CROSS_PILLAR_TILES = [
+  {
+    icon: '🌱',
+    name: 'VillageCircle',
+    desc: 'Get the philosophy behind the news',
+    url: 'https://villagecircle.ng?utm_source=amebogist&utm_medium=cta_block&utm_campaign=cross_pillar',
+  },
+  {
+    icon: '🎓',
+    name: 'EduCenter',
+    desc: 'Turn your hustle knowledge into real skills',
+    url: 'https://educenter.com.ng?utm_source=amebogist&utm_medium=cta_block&utm_campaign=cross_pillar',
+  },
+  {
+    icon: '⚡',
+    name: 'PlanAI',
+    desc: 'Run your business with AI tools',
+    url: 'https://planai.boldmind.ng/start?utm_source=amebogist&utm_medium=cta_block&utm_campaign=cross_pillar',
+  },
+  {
+    icon: '💻',
+    name: 'Vibe Coders',
+    desc: 'Build the next Naija app',
+    url: 'https://villagecircle.ng/vibe-coders?utm_source=amebogist&utm_medium=cta_block&utm_campaign=vibe_coders',
+  },
+];
+
+const AVATAR_INITIALS = ['C', 'A', 'T', 'K'];
 
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 
@@ -87,19 +138,17 @@ export async function generateMetadata({
   const { category } = await searchParams;
   const categories   = await fetchCategories();
 
-  const baseTitle       = "AmeboGist.ng — Nigeria's #1 Gist, AI, Tech, Politics & Entertainment Hub";
-  const baseDescription = 'Amebo wey make sense! Nigeria\'s premier source for authentic gist, breaking politics, trending entertainment, AI & Tech, and hustle tips.';
+  const baseTitle       = "AmeboGist — Nigeria's #1 Pidgin English Gist Platform";
+  const baseDescription =
+    'Hot gist, breaking news, AI & Tech, Politics, Entertainment — in Pidgin English wey make sense. Trusted by 12,000+ Nigerian hustlers.';
 
   if (category) {
     const cat = categories.find((c) => c.slug === category);
     return {
       metadataBase: new URL('https://amebogist.ng'),
-      title:       cat?.metaTitle       ?? `${cat?.name ?? category} News | AmeboGist.ng`,
-      description: cat?.metaDescription ?? `Latest ${category} news — AmeboGist.ng`,
-      openGraph: {
-        images: ['/og-image.jpg'],
-        siteName: 'AmeboGist — BoldMind Ecosystem',
-      },
+      title:        cat?.metaTitle       ?? `${cat?.name ?? category} News | AmeboGist.ng`,
+      description:  cat?.metaDescription ?? `Latest ${category} news — AmeboGist.ng`,
+      openGraph: { images: ['/og-image.jpg'], siteName: "AmeboGist — Nigeria's #1 Pidgin English Gist" },
     };
   }
 
@@ -108,37 +157,19 @@ export async function generateMetadata({
     title:        baseTitle,
     description:  baseDescription,
     openGraph: {
-      title: baseTitle,
-      description: baseDescription,
-      url: 'https://amebogist.ng',
-      images: ['/og-image.jpg'],
-      siteName: 'AmeboGist — BoldMind Ecosystem',
-      type: 'website',
+      title: baseTitle, description: baseDescription,
+      url: 'https://amebogist.ng', images: ['/og-image.jpg'],
+      siteName: "AmeboGist — Nigeria's #1 Pidgin English Gist", type: 'website',
     },
     twitter: {
-      card:        'summary_large_image',
-      title:       baseTitle,
-      description: baseDescription,
-      images:      ['/og-image.jpg'],
-      site:        '@boldmindtech',
+      card: 'summary_large_image', title: baseTitle, description: baseDescription,
+      images: ['/og-image.jpg'], site: '@Amebo__Gist',
     },
     alternates: { canonical: 'https://amebogist.ng' },
   };
 }
 
-export const viewport = {
-  width: 'device-width',
-  initialScale: 1,
-};
-
-// ─── Ecosystem products sidebar ────────────────────────────────────────────────
-
-const ECOSYSTEM_PRODUCTS = [
-  { id: 'boldmind-hub', name: 'BoldMind Hub', description: 'Main dashboard for all products', icon: '🚀', url: 'https://boldmind.ng'        },
-  { id: 'educenter',    name: 'EduCenter',    description: 'JAMB/WAEC prep tools',            icon: '🎓', url: 'https://educenter.com.ng'   },
-  { id: 'naija-fit',   name: 'NaijaFit',     description: 'Fitness & wellness platform',      icon: '💪', url: 'https://fit.boldmind.ng'    },
-  { id: 'planai-suite', name: 'PlanAI Suite', description: 'AI-powered business tools',       icon: '🤖', url: 'https://planai.boldmind.ng' },
-];
+export const viewport = { width: 'device-width', initialScale: 1 };
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -153,25 +184,19 @@ export default async function Home({
   const skip        = (pageNum - 1) * limit;
   const selectedCat = category ?? '';
 
-  const [categories, postsData, trendingRes] = await Promise.all([
+  const [, latestPosts, featuredPost] = await Promise.all([
     fetchCategories(),
-    fetchPosts({ limit, skip, category: selectedCat }),
-    amebogistAPI.articles.getTrending(8).catch(() => ({ data: [] })),
+    fetchLatestPosts(limit, skip, selectedCat),
+    fetchFeaturedPost(),
+    fetchTrending(5),
   ]);
 
-  const { posts, total } = postsData;
-  const trendingPosts    = (trendingRes.data ?? []).map((p: any) => ({
-    ...p,
-    category: typeof p.category === 'string'
-      ? { name: p.category, slug: p.category.toLowerCase() }
-      : p.category,
-  }));
-
-  const heroPost    = posts[0];
-  const currentUrl  = `https://amebogist.ng${selectedCat ? `/category/${selectedCat}` : ''}`;
+  const heroCardPosts   = latestPosts.slice(0, 3);
+  const displayFeatured = featuredPost ?? latestPosts[0] ?? null;
+  const gridPosts       = latestPosts.slice(featuredPost ? 0 : 1, 7);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--product-background)' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#FFFBEB' }}>
 
       {/* JSON-LD Schema */}
       <script
@@ -181,323 +206,397 @@ export default async function Home({
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type':    'CollectionPage',
-            '@id':      currentUrl,
-            name: selectedCat
-              ? `${categories.find((c: any) => c.slug === selectedCat)?.name ?? category} News | AmeboGist.ng`
-              : 'Amebo Wey Make Sense! — Latest Nigerian News',
-            url:       currentUrl,
+            name: 'Amebo Wey Make Sense! — Latest Nigerian News',
+            url:  'https://amebogist.ng',
             publisher: {
               '@type': 'Organization',
-              name:    'BoldMind Technology Solutions',
-              url:     'https://boldmind.ng',
+              name: 'BoldMind Technology Solutions',
+              url:  'https://boldmind.ng',
             },
           }),
         }}
       />
 
-      <div className="container mx-auto px-4 py-12 max-w-7xl pt-8">
+      {/* ── 1. HERO ───────────────────────────────────────────────────────── */}
+      <section
+        className="relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)' }}
+      >
+        <div className="container mx-auto px-4 py-16 md:py-24 max-w-7xl">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
 
-        {/* ─── Ecosystem Intro Banner ────────────────────────────────────────── */}
-        <div
-          className="relative mb-16 overflow-hidden rounded-[2.5rem] p-8 md:p-14 shadow-2xl"
-          style={{ background: 'linear-gradient(135deg, var(--product-primary), color-mix(in srgb, var(--product-primary) 70%, black))' }}
-        >
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
-            <div className="max-w-2xl text-center md:text-left">
-              <div
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border mb-8"
-                style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.15)' }}
-              >
+            {/* Left: brand text */}
+            <div className="space-y-8">
+              {/* Ecosystem pulse badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#065F46]/20 bg-white/60 backdrop-blur-sm">
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-green-400" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400" />
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#065F46] opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[#065F46]" />
                 </span>
-                <span className="text-[10px] font-black tracking-[0.2em] uppercase text-white/80">
+                <span className="text-[11px] font-black tracking-widest uppercase text-[#065F46]">
                   Part of BoldMind Ecosystem
                 </span>
               </div>
-              <h1 className="text-5xl md:text-7xl font-bold mb-8 font-serif tracking-tight leading-[1.05] text-white">
-                Amebo Wey{' '}
-                <span style={{ color: 'var(--product-secondary)', textDecoration: 'underline', textDecorationColor: 'var(--product-secondary)' }}>
-                  Make Sense
-                </span>!
-              </h1>
-              <p className="text-xl md:text-2xl text-white/70 font-medium max-w-xl leading-relaxed font-serif">
-                Connect wit fresh gist, breaking politics, and real-life hustle tips across{' '}
-                <span style={{ color: 'var(--product-secondary)' }} className="font-bold">Nigeria's #1 Ecosystem</span>.
-              </p>
-            </div>
 
-            <div className="flex flex-col gap-4 min-w-[260px]">
-              <Button
-                asChild
-                size="lg"
-                className="py-8 text-lg font-black rounded-2xl text-white"
-                style={{ backgroundColor: 'var(--product-secondary)', color: 'var(--product-foreground)' }}
-              >
-                <Link href="/create">
-                  Share Your Amebo
-                  <Sparkles className="ml-2 h-5 w-5 fill-current" />
-                </Link>
-              </Button>
-              <div className="flex items-center justify-center gap-2 text-white/40">
-                <div className="h-px w-8 bg-current" />
-                <span className="text-[10px] font-black tracking-widest uppercase">Trusted by 12k+ Hustlers</span>
-                <div className="h-px w-8 bg-current" />
-              </div>
-            </div>
-          </div>
-
-          {/* decorative blob */}
-          <div
-            className="absolute top-0 right-0 w-2/3 h-full blur-3xl opacity-30 pointer-events-none"
-            style={{ background: 'linear-gradient(to left, var(--product-secondary), transparent)' }}
-          />
-        </div>
-
-        {/* AdBanner */}
-        <AdBanner />
-
-        {/* ─── Hero + Trending ─────────────────────────────────────────────── */}
-        {heroPost && (
-          <section className="mb-20">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 min-h-[500px]">
-              <div className="lg:col-span-8">
-                <PostCard post={heroPost} featured={true} />
-              </div>
-              <div className="lg:col-span-4 flex flex-col gap-6">
-                {/* Trending */}
-                <div
-                  className="rounded-[2.5rem] p-6 flex-1 flex flex-col border overflow-hidden"
-                  style={{ backgroundColor: 'var(--product-background)', borderColor: 'var(--product-muted)' }}
+              {/* H1 */}
+              <div>
+                <h1
+                  className="text-5xl md:text-7xl font-black leading-[1.0] tracking-tight"
+                  style={{ color: '#065F46' }}
                 >
-                  <div className="flex items-center gap-2 mb-6">
-                    <TrendingUp className="h-5 w-5" style={{ color: 'var(--product-primary)' }} />
-                    <h3 className="text-xl font-bold font-serif" style={{ color: 'var(--product-foreground)' }}>
-                      Hot Gist
-                    </h3>
-                  </div>
-                  <div className="flex-1 overflow-y-auto">
-                    <TrendingCarousel topics={[]} posts={trendingPosts} />
-                  </div>
-                </div>
-
-                {/* Newsletter */}
-                <div
-                  className="p-6 rounded-[2.5rem] relative overflow-hidden"
-                  style={{ background: 'linear-gradient(135deg, var(--product-foreground), color-mix(in srgb, var(--product-foreground) 70%, black))', color: 'white' }}
-                >
-                  <div className="relative z-10">
-                    <h3 className="text-xl font-bold mb-2 font-serif">No Gree For Boredom!</h3>
-                    <p className="text-sm opacity-60 mb-5 leading-relaxed">Get Nigeria's freshest gist directly in your inbox.</p>
-                    <NewsletterForm compact={true} product="amebogist" />
-                  </div>
-                  <Mail className="absolute -right-4 -bottom-4 h-32 w-32 opacity-5" />
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* ─── Search ─────────────────────────────────────────────────────── */}
-        <section className="mb-20">
-          <div
-            className="rounded-[3rem] p-10 md:p-16 flex flex-col items-center text-center relative overflow-hidden border"
-            style={{ backgroundColor: 'var(--product-highlight)', borderColor: 'var(--product-muted)' }}
-          >
-            <div className="relative z-10 w-full max-w-3xl">
-              <h2 className="text-4xl md:text-5xl font-bold mb-5 font-serif" style={{ color: 'var(--product-foreground)' }}>
-                Find Your Next{' '}
-                <span style={{ color: 'var(--product-primary)' }} className="italic">Favourite Gist</span>
-              </h2>
-              <p className="text-lg mb-8 max-w-xl mx-auto font-serif" style={{ color: 'var(--product-foreground)', opacity: 0.6 }}>
-                Search across thousands of stories in politics, tech, and entertainment.
-              </p>
-              <SearchBar showTrending={true} />
-              <div className="mt-8 flex flex-wrap justify-center gap-3">
-                {['Tinubu', 'Afrobeats', 'AI Tools', 'Nollywood', 'Elections'].map((term) => (
-                  <Link
-                    key={term}
-                    href={`/search?q=${term}`}
-                    className="trending-tag text-xs font-black px-5 py-2.5 rounded-full uppercase tracking-widest transition-all border hover:text-white"
-                    style={{ backgroundColor: 'var(--product-background)', borderColor: 'var(--product-muted)', color: 'var(--product-foreground)' }}
-                  >
-                    #{term}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── Latest Posts ────────────────────────────────────────────────── */}
-        <section className="mb-20">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b pb-8 mb-10" style={{ borderColor: 'var(--product-muted)' }}>
-            <div>
-              <h2 className="text-4xl font-bold font-serif mb-2" style={{ color: 'var(--product-foreground)' }}>
-                Latest Amebo <span style={{ color: 'var(--product-primary)' }}>Stories</span>
-              </h2>
-              <p className="text-lg font-serif italic" style={{ color: 'var(--product-foreground)', opacity: 0.5 }}>
-                Fresh from de source, served hot hot.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {[
-                { href: '/category/trending',      label: '🔥 Trending',       color: 'var(--product-primary)' },
-                { href: '/category/politics',      label: '🏛️ Politics',       color: '#1E40AF' },
-                { href: '/category/entertainment', label: '🎬 Entertainment',  color: '#6B21A8' },
-              ].map((tab) => (
-                <Link
-                  key={tab.href}
-                  href={tab.href}
-                  className="px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors border"
-                  style={{ backgroundColor: `${tab.color}15`, color: tab.color, borderColor: `${tab.color}30` }}
-                >
-                  {tab.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            <div className="lg:col-span-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {posts.slice(1).map((post: any) => (
-                  <PostCard key={post._id} post={post} />
-                ))}
-              </div>
-
-              {skip + limit < total && (
-                <div className="mt-16 flex justify-center">
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="lg"
-                    className="rounded-full px-14 py-7 font-black uppercase tracking-[0.2em] text-[10px]"
-                  >
-                    <Link href={`?category=${selectedCat}&page=${pageNum + 1}`}>
-                      View More Stories
-                    </Link>
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            <aside className="lg:col-span-4 space-y-10">
-              <div
-                className="rounded-[2.5rem] p-6 border"
-                style={{ backgroundColor: 'var(--product-muted)', borderColor: 'var(--product-muted)' }}
-              >
-                <h3 className="text-lg font-bold font-serif mb-6 flex items-center gap-2" style={{ color: 'var(--product-foreground)' }}>
-                  <Sparkles className="h-4 w-4" style={{ color: 'var(--product-primary)' }} />
-                  Popular Today
-                </h3>
-                <PopularPosts />
-              </div>
-
-              <div
-                className="rounded-[2.5rem] p-6 relative overflow-hidden"
-                style={{ backgroundColor: 'var(--product-primary)', color: 'white' }}
-              >
-                <div className="relative z-10">
-                  <h3 className="text-xl font-bold mb-3 font-serif italic">Join 12k+ Creators</h3>
-                  <p className="text-sm text-white/70 mb-6 leading-relaxed">
-                    Don't miss out on AI & tech insights from the BoldMind Ecosystem.
-                  </p>
-                  <Button
-                    asChild
-                    variant="secondary"
-                    className="w-full rounded-xl font-bold"
-                    style={{ backgroundColor: 'white', color: 'var(--product-primary)' }}
-                  >
-                    <Link href="https://boldmind.ng/register">Join Community</Link>
-                  </Button>
-                </div>
-                <Users className="absolute -right-6 -bottom-6 h-40 w-40 opacity-10" />
-              </div>
-            </aside>
-          </div>
-        </section>
-
-        {/* ─── Ecosystem Widget ─────────────────────────────────────────────── */}
-        <section
-          className="relative mt-8 mb-16 overflow-hidden rounded-[3.5rem] p-8 md:p-14 shadow-2xl"
-          style={{ background: 'linear-gradient(135deg, var(--product-foreground), color-mix(in srgb, var(--product-foreground) 80%, black))', color: 'white' }}
-        >
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-            <div>
-              <div
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border mb-8"
-                style={{ backgroundColor: 'rgba(255,255,255,0.08)', borderColor: 'rgba(255,255,255,0.15)' }}
-              >
-                <Zap className="h-4 w-4" style={{ color: 'var(--product-secondary)' }} />
-                <span className="text-[10px] font-black tracking-widest uppercase text-white/80">The BoldMind Network</span>
-              </div>
-              <h3 className="text-4xl md:text-5xl font-bold font-serif mb-8 leading-tight">
-                Empowering Nigeria's{' '}
-                <span style={{ color: 'var(--product-secondary)' }}>Digital Future</span>
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {ECOSYSTEM_PRODUCTS.map((p) => (
-                  <a
-                    key={p.id}
-                    href={p.url}
-                    className="flex items-center gap-3 p-4 rounded-2xl border transition-all hover:opacity-80"
-                    style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.1)' }}
-                  >
-                    <span className="text-2xl">{p.icon}</span>
-                    <div>
-                      <h4 className="font-bold text-[10px] uppercase tracking-widest">{p.name}</h4>
-                      <p className="text-[10px] text-white/40 italic">{p.description}</p>
-                    </div>
-                  </a>
-                ))}
-              </div>
-
-              <div className="mt-10">
-                <Link
-                  href="https://boldmind.ng/products"
-                  className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest"
-                  style={{ color: 'var(--product-secondary)' }}
-                >
-                  Explore all 32+ Products <ChevronRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </div>
-
-            <div
-              className="rounded-[3rem] p-10 border"
-              style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.1)' }}
-            >
-              <p className="text-[10px] font-black uppercase tracking-[0.25em] mb-10 text-center opacity-40">
-                Global Impact Ecosystem
-              </p>
-              <div className="grid grid-cols-3 gap-10 text-center">
-                {[
-                  { icon: <Brain className="h-6 w-6" style={{ color: 'var(--product-secondary)' }} />, value: '18+',  label: 'AI Tools'  },
-                  { icon: <Users className="h-6 w-6" style={{ color: 'var(--product-secondary)' }} />, value: '12.5k', label: 'Hustlers'  },
-                  { icon: <Target className="h-6 w-6" style={{ color: 'var(--product-secondary)' }} />, value: '32+',  label: 'Live Apps' },
-                ].map((s, i) => (
-                  <div key={i} className="space-y-3">
-                    <div className="mx-auto w-12 h-12 rounded-2xl flex items-center justify-center border" style={{ backgroundColor: 'rgba(255,255,255,0.08)', borderColor: 'rgba(255,255,255,0.15)' }}>
-                      {s.icon}
-                    </div>
-                    <p className="text-3xl font-black">{s.value}</p>
-                    <p className="text-[9px] uppercase font-black tracking-widest opacity-40">{s.label}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-12 pt-8 border-t text-center" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-                <p className="text-[10px] text-white/30 uppercase font-bold tracking-[0.2em]">
-                  Mission: Digital Sovereignty for Nigeria
+                  Amebo Wey<br />
+                  Make Sense!{' '}
+                  <span role="img" aria-label="fire">🔥</span>
+                </h1>
+                <p className="mt-6 text-lg md:text-xl text-gray-700 leading-relaxed max-w-lg font-serif">
+                  Nigeria's freshest gist — AI, Tech, Politics &amp; Entertainment in pure Pidgin
                 </p>
               </div>
+
+              {/* Social proof strip */}
+              <div className="flex items-center gap-4">
+                <div className="flex -space-x-2">
+                  {AVATAR_INITIALS.map((l, i) => (
+                    <div
+                      key={i}
+                      className="w-9 h-9 rounded-full border-2 border-[#FFFBEB] flex items-center justify-center text-white text-xs font-black"
+                      style={{ backgroundColor: '#065F46' }}
+                    >
+                      {l}
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <p className="font-black text-[#065F46] text-lg leading-tight">12,000+ hustlers</p>
+                  <p className="text-xs text-gray-500 font-medium">dey read daily</p>
+                </div>
+              </div>
+
+              {/* CTAs */}
+              <div className="flex flex-wrap gap-4">
+                <Link
+                  href="/posts"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-wide text-white transition-all hover:opacity-90 active:scale-95"
+                  style={{ backgroundColor: '#065F46' }}
+                >
+                  Read Today's Gist <ChevronRight className="h-4 w-4" />
+                </Link>
+                <a
+                  href="https://whatsapp.com/channel/0029Vb8JrT172WTo9CpI3T1o"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-wide border-2 transition-all hover:bg-[#065F46] hover:text-white"
+                  style={{ borderColor: '#065F46', color: '#065F46' }}
+                >
+                  Join WhatsApp Channel
+                </a>
+              </div>
+
+              <p className="text-xs text-gray-400 font-medium tracking-wide">No spam. Just hot gist.</p>
+
+              <div className="flex items-center gap-2 text-xs text-gray-400">
+                <span className="font-bold text-gray-600">Trusted by 12k+ Hustlers</span>
+                <span>·</span>
+                <span>Part of BoldMind Ecosystem</span>
+              </div>
+            </div>
+
+            {/* Right: 3 tilted article card previews */}
+            {heroCardPosts.length > 0 && (
+              <div
+                className="hidden lg:grid grid-cols-3 gap-3 items-center"
+                style={{ minHeight: '420px' }}
+              >
+                {heroCardPosts.map((post, i) => {
+                  const cardStyles = [
+                    { transform: 'rotate(-6deg) translateY(16px)' },
+                    { transform: 'rotate(0deg) translateY(-8px) scale(1.06)', zIndex: 10, position: 'relative' as const },
+                    { transform: 'rotate(6deg) translateY(16px)' },
+                  ];
+                  return (
+                    <Link
+                      key={post._id}
+                      href={`/posts/${post.slug}`}
+                      className="block bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                      style={cardStyles[i]}
+                    >
+                      <div className="relative h-32">
+                        <Image
+                          src={post.imageUrl || '/placeholder.svg'}
+                          alt={post.title}
+                          fill
+                          sizes="220px"
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="p-3">
+                        <span
+                          className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full"
+                          style={{ backgroundColor: '#DC262615', color: '#DC2626' }}
+                        >
+                          {post.category.name}
+                        </span>
+                        <h4 className="mt-2 text-xs font-bold font-serif line-clamp-2 leading-tight text-gray-800">
+                          {post.title}
+                        </h4>
+                        <div className="mt-2 flex items-center gap-1 text-[10px] text-gray-400">
+                          <Eye className="h-3 w-3" />
+                          <span>{post.views.toLocaleString()} reads</span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 2. TRENDING STRIP ─────────────────────────────────────────────── */}
+      <section
+        className="border-y bg-white"
+        style={{ borderTopColor: '#065F4620', borderBottomColor: '#065F4620' }}
+      >
+        <div className="overflow-x-auto">
+          <div className="flex gap-3 py-4 px-6 items-center min-w-max">
+            <span className="flex-shrink-0 text-[10px] font-black uppercase tracking-widest text-gray-400 mr-1">
+              Trending:
+            </span>
+            {TRENDING_TAGS.map((tag) => (
+              <Link
+                key={tag}
+                href={`/search?q=${encodeURIComponent(tag.replace('#', ''))}`}
+                className="flex-shrink-0 px-5 py-2 rounded-full border text-xs font-black uppercase tracking-wide transition-all hover:bg-[#065F46] hover:text-white hover:border-[#065F46]"
+                style={{ backgroundColor: '#FEF3C7', borderColor: '#065F46', color: '#065F46' }}
+              >
+                {tag}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 3. FEATURED ARTICLE ───────────────────────────────────────────── */}
+      {displayFeatured && (
+        <section className="container mx-auto px-4 py-16 max-w-7xl">
+          <div className="rounded-3xl overflow-hidden shadow-lg bg-white">
+            <div className="grid md:grid-cols-2">
+              {/* Image — explicit height so next/image fill has a defined parent size */}
+              <div className="relative overflow-hidden" style={{ minHeight: '320px', height: '100%' }}>
+                <Image
+                  src={displayFeatured.imageUrl || '/placeholder.svg'}
+                  alt={displayFeatured.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="p-8 md:p-12 flex flex-col justify-center gap-6">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span
+                    className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest text-white"
+                    style={{ backgroundColor: '#DC2626' }}
+                  >
+                    <Flame className="h-3 w-3" /> HOT GIST
+                  </span>
+                  <span
+                    className="text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full"
+                    style={{ backgroundColor: '#065F4615', color: '#065F46' }}
+                  >
+                    {displayFeatured.category.name}
+                  </span>
+                </div>
+
+                <h2
+                  className="text-2xl md:text-3xl font-bold font-serif leading-tight"
+                  style={{ color: '#1C1917' }}
+                >
+                  {displayFeatured.title}
+                </h2>
+
+                <p className="text-gray-600 leading-relaxed line-clamp-3 font-serif">
+                  {displayFeatured.excerpt}
+                </p>
+
+                <div className="flex items-center gap-4 text-xs text-gray-400 font-bold uppercase tracking-widest">
+                  <span className="flex items-center gap-1.5">
+                    <Eye className="h-3 w-3" />
+                    {displayFeatured.views.toLocaleString()} reads
+                  </span>
+                  <span>·</span>
+                  <span>
+                    {(() => {
+                      const d = displayFeatured.createdAt ? new Date(displayFeatured.createdAt) : null;
+                      return d && !isNaN(d.getTime())
+                        ? d.toLocaleDateString('en-NG', { day: 'numeric', month: 'short' })
+                        : 'Recent';
+                    })()}
+                  </span>
+                </div>
+
+                <Link
+                  href={`/posts/${displayFeatured.slug}`}
+                  className="inline-flex items-center gap-2 self-start px-6 py-3 rounded-xl font-black text-sm uppercase tracking-wide text-white transition-all hover:opacity-90"
+                  style={{ backgroundColor: '#065F46' }}
+                >
+                  Read Full Gist <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
           </div>
         </section>
+      )}
 
-      </div>
+      {/* ── 4. ARTICLE GRID ───────────────────────────────────────────────── */}
+      <section className="container mx-auto px-4 py-16 max-w-7xl">
+        <div
+          className="flex items-end justify-between mb-10 pb-6 border-b"
+          style={{ borderColor: '#E7E5E4' }}
+        >
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold font-serif" style={{ color: '#1C1917' }}>
+              Latest <span style={{ color: '#065F46' }}>Amebo Stories</span>
+            </h2>
+            <p className="mt-1 text-gray-500 font-serif italic text-sm">
+              Fresh from de source, served hot hot.
+            </p>
+          </div>
+          <Link
+            href="/posts"
+            className="hidden md:inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest transition-opacity hover:opacity-70"
+            style={{ color: '#065F46' }}
+          >
+            View All <ChevronRight className="h-4 w-4" />
+          </Link>
+        </div>
+
+        {gridPosts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {gridPosts.map((post) => (
+              <PostCard key={post._id} post={post} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <p className="font-serif text-xl text-gray-400">No stories yet. Check back soon!</p>
+          </div>
+        )}
+
+        <div className="mt-12 text-center">
+          <Link
+            href="/posts"
+            className="inline-flex items-center gap-2 px-10 py-3.5 rounded-full border-2 font-black text-sm uppercase tracking-widest transition-all hover:bg-[#065F46] hover:text-white"
+            style={{ borderColor: '#065F46', color: '#065F46' }}
+          >
+            View More Stories <ChevronRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+
+      {/* ── 5. CROSS-PILLAR CTA BLOCK ─────────────────────────────────────── */}
+      <section className="py-20" style={{ backgroundColor: '#065F46' }}>
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="text-center mb-14">
+            <h2 className="text-4xl md:text-5xl font-bold font-serif text-white leading-tight">
+              Oya, go further than gist
+            </h2>
+            <p className="mt-3 text-white/50 text-lg">Explore the full BoldMind ecosystem</p>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+            {CROSS_PILLAR_TILES.map((tile) => (
+              <a
+                key={tile.name}
+                href={tile.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col gap-4 p-6 rounded-2xl border transition-all hover:bg-white/10 hover:border-white/25 hover:-translate-y-1"
+                style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.1)' }}
+              >
+                <span className="text-3xl" role="img">{tile.icon}</span>
+                <div className="flex-1">
+                  <h3 className="text-white font-bold text-lg leading-tight">{tile.name}</h3>
+                  <p className="mt-1.5 text-white/50 text-sm leading-relaxed">{tile.desc}</p>
+                </div>
+                <span className="text-white/30 group-hover:text-white transition-colors font-black text-xl">→</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 6. NAIJA HUSTLE SPOTLIGHT ─────────────────────────────────────── */}
+      <section className="container mx-auto px-4 py-16 max-w-7xl">
+        <div
+          className="bg-white rounded-3xl shadow-sm overflow-hidden"
+          style={{ borderLeft: '4px solid #065F46' }}
+        >
+          <div className="p-8 md:p-12">
+            <div className="flex items-center gap-3 mb-6 flex-wrap">
+              <span className="text-sm font-black uppercase tracking-widest" style={{ color: '#DC2626' }}>
+                📦 Naija Hustle Spotlight
+              </span>
+              <span className="text-xs text-gray-300 font-bold uppercase tracking-widest">
+                · Weekly Feature
+              </span>
+            </div>
+
+            <h3
+              className="text-2xl md:text-3xl font-bold font-serif mb-4 leading-tight"
+              style={{ color: '#1C1917' }}
+            >
+              How Mama Titi Take Use AI to Grow Her Pepper Sauce Business
+            </h3>
+
+            <p className="text-gray-600 leading-relaxed font-serif mb-8 max-w-2xl">
+              Mama Titi don dey sell pepper sauce for Surulere since 2019. When she hear about PlanAI,
+              she talk say she no sabi computer — but six months later, her online orders don increase
+              by 340%. "E surprise me o," she talk. This na the real Naija hustle story wey go inspire you.
+            </p>
+
+            <a
+              href="https://planai.boldmind.ng/store?utm_source=amebogist&utm_medium=spotlight&utm_campaign=storefronts"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-black text-sm uppercase tracking-widest transition-opacity hover:opacity-70"
+              style={{ color: '#065F46' }}
+            >
+              Start your own store <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 7. NEWSLETTER SIGNUP ──────────────────────────────────────────── */}
+      <section className="py-20" style={{ backgroundColor: '#FEF3C7' }}>
+        <div className="container mx-auto px-4 max-w-2xl text-center">
+          <h2
+            className="text-4xl md:text-5xl font-black mb-4 leading-tight"
+            style={{ color: '#065F46' }}
+          >
+            No Gree For Boredom!
+          </h2>
+          <p className="text-gray-600 mb-10 text-lg font-serif">
+            Get Nigeria's freshest gist directly in your inbox. No wahala.
+          </p>
+
+          <div
+            className="rounded-3xl p-8 shadow-lg"
+            style={{ background: 'linear-gradient(135deg, #065F46 0%, #044535 100%)' }}
+          >
+            <NewsletterForm product="amebogist" />
+            <p className="mt-5 text-white/40 text-xs font-medium">
+              Join 12k+ hustlers. No spam.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* NDPA Cookie Consent Bar */}
+      <CookieBar />
     </div>
   );
 }

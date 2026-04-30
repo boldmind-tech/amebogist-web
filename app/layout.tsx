@@ -1,7 +1,6 @@
 
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import Script from "next/script";
 import { AmebogistLayout } from "./amebogistLayout";
 import { ClientErrorBoundary } from "./components/ClientErrorBoundary";
 import { FacebookSDK, CookieConsent } from "@boldmind-tech/ui";
@@ -23,11 +22,11 @@ const canonicalUrl = getCanonicalUrl();
 export const metadata: Metadata = {
   metadataBase: new URL(canonicalUrl),
   title: {
-    default: "AmeboGist — Nigeria's #1 Pidgin English Platform for AI/Tech & Creator News",
+    default: "'AmeboGist — Nigeria\'s #1 Pidgin English Gist Platform'",
     template: "%s | AmeboGist",
   },
   description:
-    "Amebo wey make sense! Nigeria's premier source for authentic gist, AI/Tech, Creator entrepreneurship, Politics, Entertainment, Sports, and real-life hustle tips — all in Pidgin English.",
+    "Hot gist, breaking news, AI & Tech, Politics, Entertainment — in Pidgin English wey make sense. Trusted by 12,000+ Nigerian hustlers.",
   keywords: [
     "Nigerian news",
     "Pidgin English news",
@@ -74,10 +73,10 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_NG",
     url: canonicalUrl,
-    title: "AmeboGist — Nigeria's #1 Pidgin English Platform",
+    title: "AmeboGist — Amebo Wey Make Sense!",
     siteName: "AmeboGist",
     description:
-      "Nigeria's #1 platform for AI/Tech, Creator entrepreneurship, Sports, Politics, and Entertainment in Pidgin English.",
+      "Nigeria\'s #1 Pidgin English platform. 12k+ hustlers. Fresh daily",
     images: [
       {
         url: `${canonicalUrl}/og-image.png`,
@@ -90,10 +89,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    site: "@amebogist",
-    title: "AmeboGist — Nigeria's #1 Pidgin News Platform",
+    site: "@Amebo__Gist",
+    title: "AmeboGist — Amebo Wey Make Sense!",
     description:
-      "Amebo wey make sense! AI/Tech, Creator entrepreneurship, Entertainment, Sports and Politics in Pidgin English.",
+      "Nigeria\'s #1 Pidgin gist. AI, Tech, Politics, Entertainment.",
     images: [`${canonicalUrl}/og-image.png`],
   },
   icons: {
@@ -116,10 +115,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#065F46" },
-    { media: "(prefers-color-scheme: dark)", color: "#043D2E" },
-  ],
+  themeColor: '#065F46',
   colorScheme: "light dark",
   width: "device-width",
   initialScale: 1,
@@ -133,7 +129,7 @@ const organizationSchema = {
   name: "AmeboGist",
   url: canonicalUrl,
   logo: `${canonicalUrl}/logo.png`,
-  description: "Nigeria's #1 Pidgin English news and creator platform",
+  description: "Hot gist, breaking news, AI & Tech, Politics, Entertainment — in Pidgin English wey make sense. Trusted by 12,000+ Nigerian hustlers",
   foundingDate: "2025",
   address: { "@type": "PostalAddress", addressCountry: "NG", addressRegion: "Lagos" },
   contactPoint: {
@@ -145,6 +141,8 @@ const organizationSchema = {
     "https://facebook.com/amebogistng",
     "https://instagram.com/amebogist",
     "https://x.com/amebo__gist",
+    "https://tiktok.com/amebogistng",
+    "https://whatsapp.com/channel/0029Vb8JrT172WTo9CpI3T1o"
   ],
 };
 
@@ -195,14 +193,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
-      </head>
-      <body className="antialiased" suppressHydrationWarning>
-        <Script
+        {/* AdSense — plain async script to avoid data-nscript attribute warning */}
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1390336761729977"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
         />
+      </head>
+      <body className="antialiased" suppressHydrationWarning>
         <ClientErrorBoundary>
           <AmebogistLayout>{children}</AmebogistLayout>
           <CookieConsent />

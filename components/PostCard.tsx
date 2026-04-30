@@ -22,11 +22,10 @@ interface PostCardProps {
 
 export default function PostCard({ post, featured = false }: PostCardProps) {
     const categoryName = typeof post.category === 'string' ? post.category : post.category.name;
-    const date = new Date(post.createdAt).toLocaleDateString('en-NG', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-    });
+    const _d = post.createdAt ? new Date(post.createdAt) : null;
+    const date = _d && !isNaN(_d.getTime())
+        ? _d.toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })
+        : 'Recent';
 
     if (featured) {
         return (
