@@ -63,23 +63,17 @@ export default async function PostPage({ params }: PostPageProps) {
 
     let comments: AmebogistComment[] = [];
     try {
-        const commentsRes = await amebogistAPI.articles.getComments(post._id);
+        const commentsRes = await amebogistAPI.articles.getComments(post.id);
         comments = commentsRes.data || [];
     } catch {
         // comments are non-critical — page still renders without them
     }
 
     const relatedPosts = (trendingPostsRes.data || [])
-        .filter((p: any) => (p._id || p.id) !== (post._id || (post as any).id))
+        .filter((p: any) => (p._id || p.id) !== (post.id || (post as any).id))
         .slice(0, 3);
 
-    const navLinks = [
-        { href: "/", label: "Home" },
-        ...categories.filter((cat: any) => cat.slug).map((cat:any) => ({
-            href: `/category/${cat.slug}`,
-            label: cat.name,
-        })),
-    ];
+  
 
   
 

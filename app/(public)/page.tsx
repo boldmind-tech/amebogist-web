@@ -148,7 +148,7 @@ export async function generateMetadata({
       metadataBase: new URL('https://amebogist.ng'),
       title:        cat?.metaTitle       ?? `${cat?.name ?? category} News | AmeboGist.ng`,
       description:  cat?.metaDescription ?? `Latest ${category} news — AmeboGist.ng`,
-      openGraph: { images: ['/og-image.jpg'], siteName: "AmeboGist — Nigeria's #1 Pidgin English Gist" },
+      openGraph: { images: ['/og-image.jpg'], siteName: "AmeboGist NG — Nigeria's #1 Pidgin English Gist" },
     };
   }
 
@@ -206,11 +206,11 @@ export default async function Home({
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type':    'CollectionPage',
-            name: 'Amebo Wey Make Sense! — Latest Nigerian News',
+            name: 'AmeboGist NG',
             url:  'https://amebogist.ng',
             publisher: {
               '@type': 'Organization',
-              name: 'BoldMind Technology Solutions',
+              name: 'BoldMind Technology Solution Enterprise',
               url:  'https://boldmind.ng',
             },
           }),

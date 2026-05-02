@@ -1,7 +1,7 @@
 import { TermsAndConditions } from '@boldmind-tech/ui';
 
 export const metadata = {
-    title: 'Terms and Conditions - AmeboGist',
+    title: 'Terms and Conditions - AmeboGist NG',
     description: 'Terms and conditions for using AmeboGist',
 };
 export default function TermsPage() {

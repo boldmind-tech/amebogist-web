@@ -1,50 +1,47 @@
+// Re-export canonical types from the shared api-client so the frontend
+// has a single source of truth and stays in sync automatically.
+export type {
+  Article as AmebogistArticle,
+  ArticleContent,
+  ArticleMedia,
+  ArticleEngagement,
+  ArticleAuthor,
+  ArticleSeo,
+  ArticleCategorySlug,
+  ArticleStatus,
+  ArticleSource,
+  ReactionType,
+  ArticleComment as AmebogistComment,
+  CommentReactions,
+  CommentAuthor,
+  CommentLanguage,
+  CreatorStats,
+} from '@boldmind-tech/api-client';
+
+// Re-export payload + param types used in forms / fetch calls
+export type {
+  ArticleListParams,
+  CreateArticlePayload,
+  GenerateAIPayload,
+  GeneratedArticle,
+  VideoFactoryResult,
+} from '@boldmind-tech/api-client';
+
+// AmebogistCategory keeps its extended form (the API can return richer data
+// for the categories admin page that isn't in the shared ArticleCategory type).
 export interface AmebogistCategory {
-    id: string;
-    name: string;
-    slug: string;
-    count?: number;
-    metaTitle?: string;
-    metaDescription?: string;
-    description?: string;
-    createdAt?: string;
-    updatedAt?: string;
+  id: string;
+  name: string;
+  slug: string;
+  count?: number;
+  metaTitle?: string;
+  metaDescription?: string;
+  description?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-export interface AmebogistArticle {
-    _id: string;
-    title: string;
-    content: string | { pidgin: string; english?: string; yoruba?: string, igbo?: string; hausa?: string };
-    excerpt: string;
-    slug: string;
-    category: AmebogistCategory | string;
-    author: {
-        id: string;
-        name: string;
-        avatar?: string;
-    };
-    imageUrl?: string;
-    tags?: string[];
-    views: number;
-    engagement?: {
-        views: number;
-        likes: number;
-        shares: number;
-        commentsCount: number;
-    };
-    createdAt: string;
-    status: 'draft' | 'published';
-}
-
-// NEW: Add AmebogistComment interface
-export interface AmebogistComment {
-    id: string;
-    content: string;
-    author?: {
-        id: string;
-        fullName?: string;
-        avatar?: string;
-    };
-    reactions?: Record<string, number>;
-    isFlagged?: boolean;
-    createdAt: string;
+/** Helper — resolves the cover image whether the post is old (imageUrl) or new (media.featuredImage) */
+export function resolveArticleImage(article: import('@boldmind-tech/api-client').Article): string | undefined {
+  return article.media?.featuredImage ?? article.imageUrl ?? undefined;
 }

@@ -93,25 +93,14 @@ export default async function SearchPage({
             title: "Support",
             links: [
                 { href: "mailto:hello@boldmind.ng", label: "Email Us" },
-                { href: "https://wa.me/2349138349271", label: "WhatsApp Support", isExternal: true },
+                { href: "https://whatsapp.com/channel/0029Vb8JrT172WTo9CpI3T1o", label: "WhatsApp Channel", isExternal: true },
             ],
         },
     ];
 
     return (
         <div className="min-h-screen bg-white">
-            <SuperNavbar
-                links={navLinks}
-                cta={{
-                    href: "https://boldmind.ng",
-                    label: "Explore Ecosystem",
-                    variant: "secondary",
-                }}
-                logoSrc="/logo.png"
-                sticky={true}
-                animated={true}
-            />
-
+           
             <main className="container mx-auto px-4 py-12 max-w-7xl pt-32">
                 <div className="mb-16 text-center max-w-3xl mx-auto">
                     <h1 className="text-4xl md:text-6xl font-bold font-serif mb-6 tracking-tight">
@@ -178,17 +167,7 @@ export default async function SearchPage({
                 </div>
             </main>
 
-            <SuperFooter
-                logoSrc="/logo.png"
-                sections={footerSections}
-                contactInfo={{
-                    email: 'hello@boldmind.ng',
-                    phone: '+2349138349271',
-                    whatsapp: '+2349138349271',
-                    address: 'No 5 Olusoji imole str ikosi ketu Lagos Nigeria',
-                }}
-                copyright={`© ${new Date().getFullYear()} BoldMind Technology Solution Enterprise. All rights reserved.`}
-            />
+        
         </div>
     );
 }

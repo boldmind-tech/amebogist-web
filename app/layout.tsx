@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(canonicalUrl),
   title: {
     default: "'AmeboGist — Nigeria\'s #1 Pidgin English Gist Platform'",
-    template: "%s | AmeboGist",
+    template: "%s | AmeboGist NG",
   },
   description:
     "Hot gist, breaking news, AI & Tech, Politics, Entertainment — in Pidgin English wey make sense. Trusted by 12,000+ Nigerian hustlers.",
@@ -73,8 +73,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_NG",
     url: canonicalUrl,
-    title: "AmeboGist — Amebo Wey Make Sense!",
-    siteName: "AmeboGist",
+    title: "AmeboGist NG",
+    siteName: "AmeboGist NG",
     description:
       "Nigeria\'s #1 Pidgin English platform. 12k+ hustlers. Fresh daily",
     images: [
@@ -90,9 +90,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     site: "@Amebo__Gist",
-    title: "AmeboGist — Amebo Wey Make Sense!",
+    title: "AmeboGist NG",
     description:
-      "Nigeria\'s #1 Pidgin gist. AI, Tech, Politics, Entertainment.",
+      "",
     images: [`${canonicalUrl}/og-image.png`],
   },
   icons: {
@@ -105,10 +105,10 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
   },
   manifest: "/manifest.webmanifest",
-  appleWebApp: { title: "AmeboGist", statusBarStyle: "black-translucent" },
+  appleWebApp: { title: "AmeboGist NG", statusBarStyle: "black-translucent" },
   other: {
-    "application-name": "AmeboGist",
-    "apple-mobile-web-app-title": "AmeboGist",
+    "application-name": "AmeboGist NG",
+    "apple-mobile-web-app-title": "AmeboGist NG",
     "msapplication-TileColor": "#065F46",
     "google-adsense-account": "ca-pub-1390336761729977",
   },
@@ -126,7 +126,7 @@ export const viewport: Viewport = {
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "NewsMediaOrganization",
-  name: "AmeboGist",
+  name: "AmeboGist NG",
   url: canonicalUrl,
   logo: `${canonicalUrl}/logo.png`,
   description: "Hot gist, breaking news, AI & Tech, Politics, Entertainment — in Pidgin English wey make sense. Trusted by 12,000+ Nigerian hustlers",
@@ -139,7 +139,7 @@ const organizationSchema = {
   },
   sameAs: [
     "https://facebook.com/amebogistng",
-    "https://instagram.com/amebogist",
+    "https://instagram.com/amebogistng_",
     "https://x.com/amebo__gist",
     "https://tiktok.com/amebogistng",
     "https://whatsapp.com/channel/0029Vb8JrT172WTo9CpI3T1o"
@@ -149,7 +149,7 @@ const organizationSchema = {
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "AmeboGist",
+  name: "AmeboGist NG",
   url: canonicalUrl,
   inLanguage: ["en-NG", "pcm-NG"],
   potentialAction: {
@@ -178,6 +178,55 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.cdnfonts.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="//api.boldmind.ng" />
         <link rel="dns-prefetch" href="//cdn.boldmind.ng" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+        <meta name="application-name" content="AmeboGist NG" />
+        <meta name="description" content="Nigeria's #1 Pidgin English platform" />
+        <meta name="theme-color" content="#065F46" />
+        <meta name="msapplication-TileColor" content="#065F46" />
+        <meta name="msapplication-config" content="/browserconfig.xml" />
+
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png" />
+
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="/icons/apple/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="60x60" href="/icons/apple/apple-touch-icon-60x60.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="/icons/apple/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="76x76" href="/icons/apple/apple-touch-icon-76x76.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="/icons/apple/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="120x120" href="/icons/apple/apple-touch-icon-120x120.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="/icons/apple/apple-touch-icon-144x144.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/icons/apple/apple-touch-icon-152x152.png" />
+        <link rel="apple-touch-icon" sizes="167x167" href="/icons/apple/apple-touch-icon-167x167.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple/apple-touch-icon-180x180.png" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://amebogist.ng" />
+        <meta property="og:site_name" content="AmeboGist NG" />
+        <meta property="og:title" content="AmeboGist NG" />
+        <meta property="og:description" content="Nigeria's #1 Pidgin English platform" />
+        <meta property="og:image" content="https://amebogist.ng/social/og-image.jpg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="AmeboGist NG — Nigeria's #1 Pidgin English platform" />
+        <meta property="og:locale" content="en_NG" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@Amebo__Gist" />
+        <meta name="twitter:creator" content="@boldmindng" />
+        <meta name="twitter:title" content="AmeboGist NG" />
+        <meta name="twitter:description" content="Nigeria's #1 Pidgin English platform" />
+        <meta name="twitter:image" content="https://amebogist.ng/social/twitter-card.jpg" />
+
+
+        <meta name="msapplication-square70x70logo" content="/icons/windows/mstile-70x70.png" />
+        <meta name="msapplication-square150x150logo" content="/icons/windows/mstile-150x150.png" />
+        <meta name="msapplication-wide310x150logo" content="/icons/windows/mstile-310x150.png" />
+        <meta name="msapplication-square310x310logo" content="/icons/windows/mstile-310x310.png" />
+
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="facebook-domain-verification" content="8nqyeao58s2i8acw0d06d5ityryxjx" />
         <meta name="apple-mobile-web-app-capable" content="yes" />

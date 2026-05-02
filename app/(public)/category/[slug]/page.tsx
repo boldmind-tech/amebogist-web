@@ -1,9 +1,7 @@
 import Link from "next/link";
 import { amebogistAPI } from "../../../../lib/api";
 
-// Components
 import PostCard from "../../../../components/PostCard";
-import { SuperNavbar, SuperFooter } from "@boldmind-tech/ui";
 import { TrendingUp, Brain, Users, ChevronRight } from "lucide-react";
 import { Button } from "../../../../components/ui/button";
 
@@ -85,26 +83,6 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             href: `/category/${cat.slug}`,
             label: cat.name,
         })),
-    ];
-
-    const footerSections = [
-        {
-            title: "Navigation",
-            links: [
-                { href: "/", label: "Home" },
-                ...categories.filter((cat: any) => cat.slug).map((cat:any) => ({
-                    href: `/category/${cat.slug}`,
-                    label: cat.name,
-                })),
-            ],
-        },
-        {
-            title: "Support",
-            links: [
-                { href: "mailto:hello@boldmind.ng", label: "Email Us" },
-                { href: "https://wa.me/2349138349271", label: "WhatsApp Support", isExternal: true },
-            ],
-        },
     ];
 
     return (
