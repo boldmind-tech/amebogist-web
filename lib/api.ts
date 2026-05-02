@@ -106,7 +106,7 @@ export const amebogistAPI = {
       boldMindAPI.amebogist.rss.categoryFeed(category),
   },
 
-  hub: boldMindAPI.planai,
+  hub: boldMindAPI.hub,
   users: boldMindAPI.users,
   auth: boldMindAPI.auth,
 };
