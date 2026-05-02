@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { ReactNode } from 'react';
 import { SuperNavbar, SuperFooter, ThemeProvider } from '@boldmind-tech/ui';
 
@@ -106,16 +106,16 @@ export const metadata: Metadata = {
     images: ['/social/twitter-card.jpg'],
   },
 
+};
+
+export const viewport: Viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#065F46' },
     { media: '(prefers-color-scheme: dark)',  color: '#065F46' },
   ],
-
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-  },
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function PublicLayout({ children }: { children: ReactNode }) {
