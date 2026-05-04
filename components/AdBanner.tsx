@@ -31,12 +31,12 @@ export default function AdBanner({ slot }: AdBannerProps) {
               BOOST YOUR <span className="text-amebogreen-400">APP IN NIGERIA</span>!
             </h3>
             <p className="text-white/60 text-lg font-serif">
-              Join 12,000+ creators and businesses scaling with <span className="text-white font-bold italic">BoldMind OS</span>.
+              Join 12,000+ creators and businesses scaling with <span className="text-white font-bold italic">PlanAI</span>.
             </p>
           </div>
 
           <Link
-            href="https://os.boldmind.ng"
+            href="https://planai.boldmind.ng/start?utm_source=amebogist&utm_medium=banner&utm_campaign=planai_launch"
             className="group/btn relative px-8 py-4 bg-amebogreen-600 hover:bg-amebogreen-500 text-white rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-xl shadow-amebogreen-900/40 hover:-translate-y-1 active:scale-95 overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-2">

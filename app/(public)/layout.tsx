@@ -4,7 +4,7 @@ import { SuperNavbar, SuperFooter, ThemeProvider } from '@boldmind-tech/ui';
 
 const AMEBOGIST_THEME = {
   slug: 'amebogist',
-  name: 'AmeboGist NG',
+  name: 'AmeboGist',
   description: 'Nigeria\'s #1 Pidgin English platform',
   icon: '📰',
   status: 'LIVE' as const,
@@ -50,11 +50,11 @@ const FOOTER_SECTIONS = [
 export const metadata: Metadata = {
   metadataBase: new URL('https://amebogist.ng'),
   title: {
-    default: 'AmeboGist NG',
-    template: '%s | AmeboGist NG',
+    default: 'AmeboGist — Nigeria\'s #1 Pidgin English Gist',
+    template: '%s | AmeboGist',
   },
   description: "Nigeria's #1 Pidgin English platform",
-  applicationName: 'AmeboGist NG',
+  applicationName: 'AmeboGist',
   keywords: ['Nigeria', 'amebogist', 'BoldMind', 'Nigerian entrepreneur'],
   authors: [{ name: 'Boldmind Technology Solution Enterprise', url: 'https://boldmind.ng' }],
   creator: 'BoldMind Technology Solution Enterprise',
@@ -78,13 +78,13 @@ export const metadata: Metadata = {
     ],
   },
 
-  manifest: '/manifest.webmanifest',
+  manifest: '/site.webmanifest',
 
   openGraph: {
     type: 'website',
     url: 'https://amebogist.ng',
-    siteName: 'AmeboGist NG',
-    title: 'AmeboGist NG',
+    siteName: 'AmeboGist',
+    title: 'AmeboGist — Nigeria\'s #1 Pidgin English Gist',
     description: "Nigeria's #1 Pidgin English platform",
     locale: 'en_NG',
     images: [
@@ -92,16 +92,16 @@ export const metadata: Metadata = {
         url: '/social/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'AmeboGist NG',
+        alt: 'AmeboGist',
       },
     ],
   },
 
   twitter: {
     card: 'summary_large_image',
-    site: '@amebogistNG',
+    site: '@Amebo__Gist',
     creator: '@boldmindindng',
-    title: 'AmeboGist NG',
+    title: 'AmeboGist — Nigeria\'s #1 Pidgin English Gist',
     description: "Nigeria's #1 Pidgin English platform",
     images: ['/social/twitter-card.jpg'],
   },
@@ -122,8 +122,8 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider defaultTheme="light" defaultProduct={AMEBOGIST_THEME}>
       <SuperNavbar
-        logoSrc="/logo.png"
-        brandName="AmeboGist NG"
+        logoSrc="/icon-512x512.png"
+        brandName="AmeboGist"
         links={NAV_LINKS}
         cta={{ href: '/register', label: 'Join Free', variant: 'primary' }}
         theme="light"
@@ -134,7 +134,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
       <SuperFooter
-        logoSrc="/logo.png"
+        logoSrc="/icon-512x512.png"
         sections={FOOTER_SECTIONS}
         contactInfo={{
           email: 'hello@amebogist.ng',

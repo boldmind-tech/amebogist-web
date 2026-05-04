@@ -26,9 +26,6 @@ function Sidebar() {
     <aside className="hidden md:flex flex-col w-52 shrink-0 border-r border-white/10 p-5 sticky top-0 h-screen">
       <Link href="/dashboard" className="flex items-center gap-2 mb-8">
         <span className="font-black text-white text-base">AmeboGist</span>
-        <span className="text-[10px] bg-[#e11d48] text-white px-1.5 py-0.5 rounded font-bold leading-none">
-          NG
-        </span>
       </Link>
 
       <nav className="space-y-1">

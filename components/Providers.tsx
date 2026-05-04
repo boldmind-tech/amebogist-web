@@ -1,4 +1,3 @@
-// apps/web/amebogist/components/Providers.tsx
 
 import { AuthProvider } from '@boldmind-tech/auth';
 import { ThemeProvider, type ProductThemeType } from '@boldmind-tech/ui';

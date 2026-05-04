@@ -23,7 +23,7 @@ export default function WriteArticlePage() {
 
   const buildPayload = (status: 'published' | 'draft'): CreateArticlePayload => ({
     title: form.title.trim(),
-    content: form.content.trim(),
+    content: { text: form.content.trim() },
     ...(form.excerpt.trim() && { excerpt: form.excerpt.trim() }),
     ...(form.category && { category: form.category }),
     tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),

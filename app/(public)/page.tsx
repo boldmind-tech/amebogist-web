@@ -97,7 +97,7 @@ async function fetchTrending(limit = 5): Promise<NormalizedPost[]> {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const TRENDING_TAGS = ['#Tinubu', '#Afrobeats', '#AI Tools', '#JAMB', '#Naira'];
+const TRENDING_TAGS = ['#Tinubu', '#Afrobeats', '#AI Tools', '#JAMB', '#Naira', '#  Vibe Coder', '#Lagos', '#Tech Startups', '#NaijaPolitics', '#Entertainment'];
 
 const CROSS_PILLAR_TILES = [
   {
@@ -148,7 +148,7 @@ export async function generateMetadata({
       metadataBase: new URL('https://amebogist.ng'),
       title:        cat?.metaTitle       ?? `${cat?.name ?? category} News | AmeboGist.ng`,
       description:  cat?.metaDescription ?? `Latest ${category} news — AmeboGist.ng`,
-      openGraph: { images: ['/og-image.jpg'], siteName: "AmeboGist NG — Nigeria's #1 Pidgin English Gist" },
+      openGraph: { images: ['/og-image.jpg'], siteName: "AmeboGist — Nigeria's #1 Pidgin English Gist" },
     };
   }
 

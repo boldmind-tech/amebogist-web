@@ -1,4 +1,4 @@
-// APPS/WEB_APPS/amebogist/components/PostCard.tsx
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Clock, Eye, ChevronRight } from 'lucide-react';
@@ -123,7 +123,7 @@ export default function PostCard({ post, featured = false }: PostCardProps) {
                     <div className="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <div className="w-8 h-8 rounded-full bg-amebogreen-50 flex items-center justify-center text-amebogreen-600 font-bold text-xs">
-                                {post?.author?.name?.charAt(0) || 'A'}
+                                {post?.author?.name || 'A'}
                             </div>
                             <span className="text-xs font-bold text-gray-700">{post?.author?.name || 'Amebo Master'}</span>
                         </div>

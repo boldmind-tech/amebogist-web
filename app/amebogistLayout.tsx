@@ -10,7 +10,7 @@ interface AmebogistLayoutProps {
 
 const AMEBOGIST_THEME: ProductThemeType = {
   slug: 'amebogist',
-  name: 'AmeboGist NG',
+  name: 'AmeboGist',
   description: 'Hot gist, breaking news, AI & Tech, Politics, Entertainment — in Pidgin English wey make sense. Trusted by 12,000+ Nigerian hustlers.',
   icon: '📰',
   status: 'LIVE',

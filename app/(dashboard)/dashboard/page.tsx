@@ -135,7 +135,7 @@ export default function DashboardPage() {
           <div className="space-y-2">
             {articles.map((a) => (
               <div
-                key={a.id}
+                key={a._id}
                 className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-xl"
               >
                 <div className="flex-1 min-w-0">

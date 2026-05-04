@@ -1,4 +1,3 @@
-
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { AmebogistLayout } from "./amebogistLayout";
@@ -73,13 +72,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_NG",
     url: canonicalUrl,
-    title: "AmeboGist NG",
-    siteName: "AmeboGist NG",
+    title: "AmeboGist",
+    siteName: "AmeboGist",
     description:
       "Nigeria\'s #1 Pidgin English platform. 12k+ hustlers. Fresh daily",
     images: [
       {
-        url: `${canonicalUrl}/og-image.png`,
+        url: `${canonicalUrl}/social/og-image.jpg`,
         width: 1200,
         height: 630,
         alt: "AmeboGist — Naija Gist Platform",
@@ -93,7 +92,7 @@ export const metadata: Metadata = {
     title: "AmeboGist NG",
     description:
       "",
-    images: [`${canonicalUrl}/og-image.png`],
+    images: [`${canonicalUrl}/social/og-image.jpg`],
   },
   icons: {
     icon: [
@@ -105,10 +104,10 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
   },
   manifest: "/manifest.webmanifest",
-  appleWebApp: { title: "AmeboGist NG", statusBarStyle: "black-translucent" },
+  appleWebApp: { title: "AmeboGist", statusBarStyle: "black-translucent" },
   other: {
-    "application-name": "AmeboGist NG",
-    "apple-mobile-web-app-title": "AmeboGist NG",
+    "application-name": "AmeboGist",
+    "apple-mobile-web-app-title": "AmeboGist",
     "msapplication-TileColor": "#065F46",
     "google-adsense-account": "ca-pub-1390336761729977",
   },
@@ -126,9 +125,9 @@ export const viewport: Viewport = {
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "NewsMediaOrganization",
-  name: "AmeboGist NG",
+  name: "AmeboGist",
   url: canonicalUrl,
-  logo: `${canonicalUrl}/logo.png`,
+  logo: `${canonicalUrl}/icon-512x512.png`,
   description: "Hot gist, breaking news, AI & Tech, Politics, Entertainment — in Pidgin English wey make sense. Trusted by 12,000+ Nigerian hustlers",
   foundingDate: "2025",
   address: { "@type": "PostalAddress", addressCountry: "NG", addressRegion: "Lagos" },
@@ -149,7 +148,7 @@ const organizationSchema = {
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "AmeboGist NG",
+  name: "AmeboGist",
   url: canonicalUrl,
   inLanguage: ["en-NG", "pcm-NG"],
   potentialAction: {
@@ -179,9 +178,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="//api.boldmind.ng" />
         <link rel="dns-prefetch" href="//cdn.boldmind.ng" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
 
-        <meta name="application-name" content="AmeboGist NG" />
+        <meta name="application-name" content="AmeboGist" />
         <meta name="description" content="Nigeria's #1 Pidgin English platform" />
         <meta name="theme-color" content="#065F46" />
         <meta name="msapplication-TileColor" content="#065F46" />
@@ -206,18 +205,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://amebogist.ng" />
-        <meta property="og:site_name" content="AmeboGist NG" />
-        <meta property="og:title" content="AmeboGist NG" />
+        <meta property="og:site_name" content="AmeboGist" />
+        <meta property="og:title" content="AmeboGist" />
         <meta property="og:description" content="Nigeria's #1 Pidgin English platform" />
         <meta property="og:image" content="https://amebogist.ng/social/og-image.jpg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content="AmeboGist NG — Nigeria's #1 Pidgin English platform" />
+        <meta property="og:image:alt" content="AmeboGist — Nigeria's #1 Pidgin English platform" />
         <meta property="og:locale" content="en_NG" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@Amebo__Gist" />
         <meta name="twitter:creator" content="@boldmindng" />
-        <meta name="twitter:title" content="AmeboGist NG" />
+        <meta name="twitter:title" content="Amebo__Gist" />
         <meta name="twitter:description" content="Nigeria's #1 Pidgin English platform" />
         <meta name="twitter:image" content="https://amebogist.ng/social/twitter-card.jpg" />
 

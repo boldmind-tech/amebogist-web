@@ -7,7 +7,7 @@ const HUB_URL =
 
 const SSO_COOKIE = 'boldmind_sso';
 
-export function middleware(request: NextRequest): NextResponse {
+export function proxy(request: NextRequest): NextResponse {
   const token = request.cookies.get(SSO_COOKIE)?.value;
 
   if (token) return NextResponse.next();

@@ -1,26 +1,25 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-
-  reactStrictMode: true,
-
   transpilePackages: [
-    '@boldmind-tech/auth',
-    '@boldmind-tech/api-client',
     '@boldmind-tech/ui',
+    '@boldmind-tech/auth',
     '@boldmind-tech/utils',
+    '@boldmind-tech/api-client',
   ],
 
-  // @boldmind-tech/auth@4.0.0 exports point to index.mjs but ships index.js
-  turbopack: {
-    resolveAlias: {
-      '@boldmind-tech/auth': './node_modules/@boldmind-tech/auth/dist/index.js',
-    },
-  },
+  output: 'standalone',
 
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: '**' },
-      { protocol: 'http', hostname: 'localhost' },
+      { protocol: 'https', hostname: '**.boldmind.ng' },
+      { protocol: 'https', hostname: '**.amebogist.ng' },
+      { protocol: 'https', hostname: '**.educenter.com.ng' },
+      { protocol: 'https', hostname: '**.villagecircle.ng'},
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
+      { protocol: 'https', hostname: '**.vercel.app' },
+      { protocol: 'https', hostname: '**.r2.cloudflarestorage.com' },
     ],
   },
 
@@ -28,7 +27,24 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
-  output: 'standalone',
+  experimental: {
+    externalDir: true,
+  },
+
+
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Frame-Options',       value: 'SAMEORIGIN' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy',        value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy',     value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
