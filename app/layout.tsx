@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(canonicalUrl),
   title: {
     default: "'AmeboGist — Nigeria\'s #1 Pidgin English Gist Platform'",
-    template: "%s | AmeboGist NG",
+    template: "%s | AmeboGist",
   },
   description:
     "Hot gist, breaking news, AI & Tech, Politics, Entertainment — in Pidgin English wey make sense. Trusted by 12,000+ Nigerian hustlers.",
