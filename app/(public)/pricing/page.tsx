@@ -1,4 +1,4 @@
-import { PricingContent } from '@boldmind-tech/ui';
+import { PricingContent } from '@boldmindng/ui';
 
 export const metadata = {
     title: 'Pricing - AmeboGist NG',

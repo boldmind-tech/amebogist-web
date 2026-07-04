@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { authApi } from '@boldmind-tech/auth';
+import { authApi } from '@boldmindng/auth';
 import { toast } from 'sonner';
 import Link from 'next/link';
 

@@ -102,19 +102,19 @@ const TRENDING_TAGS = ['#Tinubu', '#Afrobeats', '#AI Tools', '#JAMB', '#Naira', 
 const CROSS_PILLAR_TILES = [
   {
     icon: '🌱',
-    name: 'VillageCircle',
+    name: 'VillageCircle NG',
     desc: 'Get the philosophy behind the news',
     url: 'https://villagecircle.ng?utm_source=amebogist&utm_medium=cta_block&utm_campaign=cross_pillar',
   },
   {
     icon: '🎓',
-    name: 'EduCenter',
+    name: 'Boldmind EduCenter',
     desc: 'Turn your hustle knowledge into real skills',
     url: 'https://educenter.com.ng?utm_source=amebogist&utm_medium=cta_block&utm_campaign=cross_pillar',
   },
   {
     icon: '⚡',
-    name: 'PlanAI',
+    name: 'PlanAI by BoldmindNG',
     desc: 'Run your business with AI tools',
     url: 'https://planai.boldmind.ng/start?utm_source=amebogist&utm_medium=cta_block&utm_campaign=cross_pillar',
   },
@@ -138,7 +138,7 @@ export async function generateMetadata({
   const { category } = await searchParams;
   const categories   = await fetchCategories();
 
-  const baseTitle       = "AmeboGist — Nigeria's #1 Pidgin English Gist Platform";
+  const baseTitle       = "AmeboGist NG — Nigeria's #1 Pidgin English Gist Platform";
   const baseDescription =
     'Hot gist, breaking news, AI & Tech, Politics, Entertainment — in Pidgin English wey make sense. Trusted by 12,000+ Nigerian hustlers.';
 
@@ -148,7 +148,7 @@ export async function generateMetadata({
       metadataBase: new URL('https://amebogist.ng'),
       title:        cat?.metaTitle       ?? `${cat?.name ?? category} News | AmeboGist.ng`,
       description:  cat?.metaDescription ?? `Latest ${category} news — AmeboGist.ng`,
-      openGraph: { images: ['/og-image.jpg'], siteName: "AmeboGist — Nigeria's #1 Pidgin English Gist" },
+      openGraph: { images: ['/og-image.jpg'], siteName: "AmeboGist NG — Nigeria's #1 Pidgin English Gist" },
     };
   }
 
@@ -159,11 +159,11 @@ export async function generateMetadata({
     openGraph: {
       title: baseTitle, description: baseDescription,
       url: 'https://amebogist.ng', images: ['/og-image.jpg'],
-      siteName: "AmeboGist — Nigeria's #1 Pidgin English Gist", type: 'website',
+      siteName: "AmeboGist NG — Nigeria's #1 Pidgin English Gist", type: 'website',
     },
     twitter: {
       card: 'summary_large_image', title: baseTitle, description: baseDescription,
-      images: ['/og-image.jpg'], site: '@Amebo__Gist',
+      images: ['/og-image.jpg'], site: '@amebogistng',
     },
     alternates: { canonical: 'https://amebogist.ng' },
   };
@@ -210,7 +210,7 @@ export default async function Home({
             url:  'https://amebogist.ng',
             publisher: {
               '@type': 'Organization',
-              name: 'BoldMind Technology Solution Enterprise',
+              name: 'Boldmind Technology Solution Enterprise',
               url:  'https://boldmind.ng',
             },
           }),
@@ -234,7 +234,7 @@ export default async function Home({
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-[#065F46]" />
                 </span>
                 <span className="text-[11px] font-black tracking-widest uppercase text-[#065F46]">
-                  Part of BoldMind Ecosystem
+                  Part of BoldmindNG Ecosystem
                 </span>
               </div>
 
@@ -297,7 +297,7 @@ export default async function Home({
               <div className="flex items-center gap-2 text-xs text-gray-400">
                 <span className="font-bold text-gray-600">Trusted by 12k+ Hustlers</span>
                 <span>·</span>
-                <span>Part of BoldMind Ecosystem</span>
+                <span>Part of BoldmindNG Ecosystem</span>
               </div>
             </div>
 

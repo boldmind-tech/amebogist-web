@@ -1,4 +1,3 @@
-// tailwind.config.js - Amebogist
 
 /** @type {import('tailwindcss').Config} */
 const config = {
@@ -6,7 +5,7 @@ const config = {
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx}',
-    './node_modules/@boldmind-tech/ui/dist/**/*.{js,mjs}',
+    './node_modules/@boldmindng/ui/dist/**/*.{js,mjs}',
   ],
   theme: {
     extend: {

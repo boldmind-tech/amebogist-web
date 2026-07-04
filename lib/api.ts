@@ -4,7 +4,7 @@ import {
   type CreateArticlePayload,
   type GenerateAIPayload,
   type ReactionType,
-} from '@boldmind-tech/api-client';
+} from '@boldmindng/api-client';
 
 export const amebogistAPI = {
   articles: {

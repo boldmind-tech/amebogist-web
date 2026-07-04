@@ -1,8 +1,8 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { ThemeProvider, FontProvider } from '@boldmind-tech/ui';
-import type { ProductThemeType } from '@boldmind-tech/ui';
+import { ThemeProvider, FontProvider } from '@boldmindng/ui';
+import type { ProductThemeType } from '@boldmindng/ui';
 
 interface AmebogistLayoutProps {
   children: ReactNode;
@@ -10,7 +10,7 @@ interface AmebogistLayoutProps {
 
 const AMEBOGIST_THEME: ProductThemeType = {
   slug: 'amebogist',
-  name: 'AmeboGist',
+  name: 'AmeboGist NG',
   description: 'Hot gist, breaking news, AI & Tech, Politics, Entertainment — in Pidgin English wey make sense. Trusted by 12,000+ Nigerian hustlers.',
   icon: '📰',
   status: 'LIVE',

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { useAuth } from '@boldmind-tech/auth';
+import { useAuth } from '@boldmindng/auth';
 
 const getPasswordStrength = (password: string) => {
   let strength = 0;

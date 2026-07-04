@@ -1,7 +1,7 @@
 "use client";
 
 import { Share2, Facebook, Twitter, Link as LinkIcon, MessageCircle } from 'lucide-react';
-import { Button } from '@boldmind-tech/ui';
+import { Button } from '@boldmindng/ui';
 import { toast } from 'sonner';
 
 export default function ShareButtons({ url, vertical = false }: { url: string; title: string, vertical?: boolean }) {

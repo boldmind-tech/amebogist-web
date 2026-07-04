@@ -6,7 +6,7 @@ import { amebogistAPI } from "../../../../lib/api";
 import { Button } from "../../../../components/ui/button";
 // import { Card, CardContent } from "../../../components/ui/card";
 import { Badge } from "../../../../components/ui/badge";
-import { SuperNavbar, SuperFooter } from "@boldmind-tech/ui";
+import { SuperNavbar, SuperFooter } from "@boldmindng/ui";
 
 import AdBanner from "../../../../components/AdBanner";
 import ShareButtons from "../../../../components/ShareButtons";

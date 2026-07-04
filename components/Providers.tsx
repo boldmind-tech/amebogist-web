@@ -1,6 +1,6 @@
 
-import { AuthProvider } from '@boldmind-tech/auth';
-import { ThemeProvider, type ProductThemeType } from '@boldmind-tech/ui';
+import { AuthProvider } from '@boldmindng/auth';
+import { ThemeProvider, type ProductThemeType } from '@boldmindng/ui';
 
 interface ProvidersProps {
   children: React.ReactNode;

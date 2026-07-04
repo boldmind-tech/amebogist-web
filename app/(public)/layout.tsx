@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import { ReactNode } from 'react';
-import { SuperNavbar, SuperFooter, ThemeProvider } from '@boldmind-tech/ui';
+import { SuperNavbar, SuperFooter, ThemeProvider } from '@boldmindNG/ui';
 
 const AMEBOGIST_THEME = {
   slug: 'amebogist',
-  name: 'AmeboGist',
+  name: 'AmeboGist NG',
   description: 'Nigeria\'s #1 Pidgin English platform',
   icon: '📰',
   status: 'LIVE' as const,
@@ -50,15 +50,15 @@ const FOOTER_SECTIONS = [
 export const metadata: Metadata = {
   metadataBase: new URL('https://amebogist.ng'),
   title: {
-    default: 'AmeboGist — Nigeria\'s #1 Pidgin English Gist',
-    template: '%s | AmeboGist',
+    default: 'AmeboGist NG — Nigeria\'s #1 Pidgin English Gist',
+    template: '%s | AmeboGist NG',
   },
   description: "Nigeria's #1 Pidgin English platform",
-  applicationName: 'AmeboGist',
-  keywords: ['Nigeria', 'amebogist', 'BoldMind', 'Nigerian entrepreneur'],
+  applicationName: 'AmeboGist NG',
+  keywords: ['Nigeria', 'amebogist', 'BoldmindNG', 'Nigerian entrepreneur'],
   authors: [{ name: 'Boldmind Technology Solution Enterprise', url: 'https://boldmind.ng' }],
-  creator: 'BoldMind Technology Solution Enterprise',
-  publisher: 'BoldMind Technology Solution Enterprise',
+  creator: 'Boldmind Technology Solution Enterprise',
+  publisher: 'Boldmind Technology Solution Enterprise',
 
   icons: {
     icon: [
@@ -83,8 +83,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: 'https://amebogist.ng',
-    siteName: 'AmeboGist',
-    title: 'AmeboGist — Nigeria\'s #1 Pidgin English Gist',
+    siteName: 'AmeboGist NG',
+    title: 'AmeboGist NG — Nigeria\'s #1 Pidgin English Gist',
     description: "Nigeria's #1 Pidgin English platform",
     locale: 'en_NG',
     images: [
@@ -99,9 +99,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: 'summary_large_image',
-    site: '@Amebo__Gist',
+    site: '@amebogistng',
     creator: '@boldmindindng',
-    title: 'AmeboGist — Nigeria\'s #1 Pidgin English Gist',
+    title: 'AmeboGist NG — Nigeria\'s #1 Pidgin English Gist',
     description: "Nigeria's #1 Pidgin English platform",
     images: ['/social/twitter-card.jpg'],
   },

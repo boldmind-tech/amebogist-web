@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy - AmeboGist',
+  title: 'Privacy Policy - AmeboGist NG',
   description:
-    'Read the AmeboGist privacy policy to understand how we collect, use, and protect your personal information.',
+    'Read the AmeboGist NG privacy policy to understand how we collect, use, and protect your personal information.',
 };
 
 const LAST_UPDATED = 'May 1, 2026';

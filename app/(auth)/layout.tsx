@@ -1,11 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Logo, SuperNavbar, SuperFooter, ThemeProvider } from '@boldmind-tech/ui';
+import { Logo, SuperNavbar, SuperFooter, ThemeProvider } from '@boldmindng/ui';
 import Link from 'next/link';
 
 const AMEBOGIST_THEME = {
-  slug: 'amebogist', name: 'AmeboGist', description: 'Nigeria\'s #1 Pidgin English platform',
+  slug: 'amebogist', name: 'AmeboGist NG', description: 'Nigeria\'s #1 Pidgin English platform',
   icon: '📰', status: 'LIVE' as const,
   colors: { primary: '#065F46', secondary: '#DC2626', accent: '#0891B2', background: '#FAFAFA' },
 };

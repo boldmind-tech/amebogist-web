@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
-import { useAuth } from '@boldmind-tech/auth';
+import { useAuth } from '@boldmindng/auth';
 
 const socialLogins = [
   {

@@ -1,11 +1,10 @@
-// APPS/WEB_APPS/amebogist/app/search/page.tsx
 import Link from "next/link";
 import { amebogistAPI } from "../../../lib/api";
 
 // Components
 import PostCard from "../../../components/PostCard";
 import SearchBar from "../../../components/SearchBar";
-import { SuperNavbar, SuperFooter } from "@boldmind-tech/ui";
+import { SuperNavbar, SuperFooter } from "@boldmindng/ui";
 import { TrendingUp } from "lucide-react";
 
 // Types

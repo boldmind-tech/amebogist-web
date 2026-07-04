@@ -16,7 +16,7 @@ export type {
   CommentAuthor,
   CommentLanguage,
   CreatorStats,
-} from '@boldmind-tech/api-client';
+} from '@boldmindng/api-client';
 
 // Re-export payload + param types used in forms / fetch calls
 export type {
@@ -25,7 +25,7 @@ export type {
   GenerateAIPayload,
   GeneratedArticle,
   VideoFactoryResult,
-} from '@boldmind-tech/api-client';
+} from '@boldmindng/api-client';
 
 // AmebogistCategory keeps its extended form (the API can return richer data
 // for the categories admin page that isn't in the shared ArticleCategory type).
@@ -42,6 +42,6 @@ export interface AmebogistCategory {
 }
 
 /** Helper — resolves the cover image whether the post is old (imageUrl) or new (media.featuredImage) */
-export function resolveArticleImage(article: import('@boldmind-tech/api-client').Article): string | undefined {
+export function resolveArticleImage(article: import('@boldmindng/api-client').Article): string | undefined {
   return article.media?.featuredImage ?? article.imageUrl ?? undefined;
 }

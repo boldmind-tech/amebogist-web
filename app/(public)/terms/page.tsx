@@ -1,4 +1,4 @@
-import { TermsAndConditions } from '@boldmind-tech/ui';
+import { TermsAndConditions } from '@boldmindng/ui';
 
 export const metadata = {
     title: 'Terms and Conditions - AmeboGist NG',

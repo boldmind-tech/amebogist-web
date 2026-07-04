@@ -1,28 +1,27 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+// proxy.ts
+import { createAuthMiddleware } from '@boldmindng/auth';
 
 const HUB_URL =
   process.env['NEXT_PUBLIC_HUB_URL'] ||
   (process.env.NODE_ENV === 'production' ? 'https://boldmind.ng' : 'http://localhost:4001');
 
-const SSO_COOKIE = 'boldmind_sso';
-
-export function proxy(request: NextRequest): NextResponse {
-  const token = request.cookies.get(SSO_COOKIE)?.value;
-
-  if (token) return NextResponse.next();
-
-  const loginUrl = new URL(`${HUB_URL}/login`);
-  loginUrl.searchParams.set('return_url', request.nextUrl.href);
-  return NextResponse.redirect(loginUrl);
-}
+export const proxy = createAuthMiddleware({
+  protectedPaths: [
+    '/dashboard/:path*',
+    '/write/:path*',
+    '/my-articles/:path*',
+    '/analytics/:path*',
+    '/settings/:path*',
+  ],
+  loginUrl: `${HUB_URL}/login`,
+});
 
 export const config = {
-  // Only guard creator-side routes on amebogist.ng
-  // Everything else (articles, categories, search) is public
   matcher: [
-    '/create/:path*',
+    '/dashboard/:path*',
+    '/write/:path*',
     '/my-articles/:path*',
-    '/profile/edit/:path*',
+    '/analytics/:path*',
+    '/settings/:path*',
   ],
 };

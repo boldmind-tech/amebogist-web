@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, Suspense } from 'react';
 import { toast } from 'sonner';
-import { useAuth, authApi } from '@boldmind-tech/auth';
+import { useAuth, authApi } from '@boldmindng/auth';
 
 function VerifyEmailContent() {
     const searchParams = useSearchParams();
