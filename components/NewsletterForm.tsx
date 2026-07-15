@@ -1,20 +1,20 @@
 "use client";
 
-import { useState } from 'react';
-import { Button, Input } from '@boldmind-tech/ui';
-import { Mail, CheckCircle2 } from 'lucide-react';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { Button, Input } from "@boldmindng/ui";
+import { Mail, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function NewsletterForm({
   compact = false,
-  product = 'amebogist',
-  tags = []
+  product = "amebogist",
+  tags = [],
 }: {
   compact?: boolean;
   product?: string;
   tags?: string[];
 }) {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
 
@@ -24,11 +24,11 @@ export default function NewsletterForm({
 
     setIsLoading(true);
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     setIsLoading(false);
     setIsSubscribed(true);
-    toast.success('Welcome to the inner circle! 🚀');
+    toast.success("Welcome to the inner circle! 🚀");
   };
 
   if (isSubscribed) {
@@ -41,7 +41,10 @@ export default function NewsletterForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className={`flex flex-col gap-4 ${compact ? '' : 'max-w-md mx-auto'}`}>
+    <form
+      onSubmit={handleSubmit}
+      className={`flex flex-col gap-4 ${compact ? "" : "max-w-md mx-auto"}`}
+    >
       <div className="relative group">
         <Input
           type="email"
@@ -49,7 +52,9 @@ export default function NewsletterForm({
           required
           className="pl-12 h-14 rounded-2xl border-white/10 bg-white/5 focus:bg-white/10 text-white placeholder:text-white/30 focus:border-amebogreen-500 transition-all duration-300"
           value={email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setEmail(e.target.value)
+          }
         />
         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40 group-focus-within:text-amebogreen-400 transition-colors" />
       </div>
@@ -64,7 +69,7 @@ export default function NewsletterForm({
             Joining...
           </span>
         ) : (
-          'Subscribe Now'
+          "Subscribe Now"
         )}
       </Button>
     </form>
