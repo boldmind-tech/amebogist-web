@@ -102,14 +102,18 @@ p {
   --color-info: #0284c7;
   --color-info-light: #e0f2fe;
 
-  --product-primary: #2b4d87;
-  --product-secondary: #e9a825;
-  --product-accent: #5b8ade;
-  --product-background: #fafaf9;
-  --product-foreground: #1a202c;
-  --product-muted: #e7e5e4;
-  --product-highlight: rgba(233, 168, 37, 0.12);
-  --product-glow: rgba(233, 168, 37, 0.25);
+  /* This app's own :root default was boldmind-hub blue — but this IS the
+     amebogist-web app, so :root itself should default to amebogist's own
+     scheme (matches colors.ts), not the hub's, before [data-product]
+     narrows further for any embedded cross-pillar previews. */
+  --product-primary: #065f46;
+  --product-secondary: #dc2626;
+  --product-accent: #0ea5e9;
+  --product-background: #fffbeb;
+  --product-foreground: #1c1917;
+  --product-muted: #fef3cf;
+  --product-highlight: rgba(220, 38, 38, 0.12);
+  --product-glow: rgba(220, 38, 38, 0.25);
 
   --font-primary: "OpenDyslexic", "Comic Sans MS", "Arial", sans-serif;
   --font-serif: "Lora", Georgia, serif;
@@ -190,24 +194,31 @@ p {
 
 [data-product="amebogist"],
 [data-product="amebogist-twa"] {
+  /* accent and muted corrected against the verified colors.ts —
+     accent was #0891b2 (should be #0ea5e9), muted was #fef3c7 (a
+     single-character transposition of the real #fef3cf). */
   --product-primary: #065f46;
   --product-secondary: #dc2626;
-  --product-accent: #0891b2;
+  --product-accent: #0ea5e9;
   --product-background: #fffbeb;
   --product-foreground: #1c1917;
-  --product-muted: #fef3c7;
+  --product-muted: #fef3cf;
   --product-highlight: rgba(220, 38, 38, 0.12);
   --product-glow: rgba(220, 38, 38, 0.25);
 }
 
 [data-product="educenter"],
 [data-product="educenter-twa"] {
+  /* accent/background/foreground/muted corrected against the verified
+     colors.ts (was #7c3aed / #f8fafc / #0f172a / #e2e8f0). */
   --product-primary: #1e40af;
   --product-secondary: #f59e0b;
-  --product-accent: #7c3aed;
-  --product-background: #f8fafc;
-  --product-foreground: #0f172a;
-  --product-muted: #e2e8f0;
+  --product-accent: #0ea5e9;
+  --product-background: #fafaf9;
+  --product-foreground: #1a202c;
+  --product-muted: #e7e5e4;
+  --product-highlight: rgba(245, 158, 11, 0.12);
+  --product-glow: rgba(245, 158, 11, 0.25);
 }
 
 /* ── Dark mode ──────────────────────────────────────────────────────────── */
