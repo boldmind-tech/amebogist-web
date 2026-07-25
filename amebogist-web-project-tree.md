@@ -1,4 +1,3 @@
-
 ```
 amebogist-web
 ├─ .npmrc
@@ -29,9 +28,9 @@ amebogist-web
 │  │  ├─ layout.tsx
 │  │  ├─ page.tsx
 │  │  ├─ posts
-│  │  │  ├─ page.tsx
-│  │  │  └─ [slug]
-│  │  │     └─ page.tsx
+│  │  │  ├─ [slug]
+│  │  │  │  └─ page.tsx
+│  │  │  └─ page.tsx
 │  │  ├─ pricing
 │  │  │  └─ page.tsx
 │  │  ├─ privacy
@@ -54,7 +53,6 @@ amebogist-web
 │  │  └─ ClientErrorBoundary.tsx
 │  ├─ globals.css
 │  └─ layout.tsx
-├─ boldmind-system-design-v2-alignment-addendum.md
 ├─ components
 │  ├─ AdBanner.tsx
 │  ├─ AdminArticleTable.tsx
