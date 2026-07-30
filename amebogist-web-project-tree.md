@@ -1,6 +1,7 @@
 ```
 amebogist-web
 ├─ .npmrc
+├─ README.md
 ├─ amebogist-web-project-tree.md
 ├─ app
 │  ├─ (auth)
@@ -77,8 +78,8 @@ amebogist-web
 │  └─ utils.ts
 ├─ next.config.mjs
 ├─ package.json
+├─ pnpm-lock.yaml
 ├─ postcss.config.js
-├─ project-structure-truth.md
 ├─ proxy.ts
 ├─ public
 │  ├─ ads.txt
@@ -146,8 +147,7 @@ amebogist-web
 │  │  ├─ whatsapp-preview.jpg
 │  │  └─ youtube-art.jpg
 │  └─ sw.js
-├─ readme.md
-├─ tailwind.config.js
+├─ tailwind.config.ts
 ├─ tsconfig.json
 └─ types
    └─ index.ts
