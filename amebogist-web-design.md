@@ -145,3 +145,26 @@ Feed collapses to 1 column, thumbnail-left/text-right compact rows (not full-ble
 | P1       | Creator earnings-forward dashboard              | `/dashboard`            | 2d     | Frontend |
 | P2       | Mobile compact feed rows                        | `/`                     | 1d     | Frontend |
 | P2       | Accessibility contrast audit                    | all                     | 1d     | Frontend |
+
+### Frontend Design Docs — Addendum v1
+
+**Applies to:** `boldmind-web`, `planai-suite`, `amebogist-web`, `villagecircle-web` design docs.
+**Not applied here:** `educenter-web` — see the full v2 rewrite (`educenter-web-design-doc-v2.md`), which got the larger LMS/School Portal priority update.
+
+**Purpose of this addendum:** two things came out of reconciling the individual app docs against `boldmind-service-canonical.md` v1.3 and `boldmind-shared-monorepo-v1.1.md`: (1) a couple of route/module references had drifted or were left as open flags, and (2) none of the four docs below had an explicit "room for future pages" convention the way `/study-hub/*` implicitly has one in educenter — this addendum adds that pattern to each app, plus flags anything newly confirmed or newly gapped by the v1.3 service doc.
+
+---
+
+## amebogist-web
+
+### Reconciliation against `boldmind-service-canonical.md` v1.3
+
+- The original doc's data-flow section uses `/amebogist/posts` naming (`GET /amebogist/posts?page=&category=`, etc.). Canonical v1.3 §2.1 confirms the **live** naming is `/amebogist/articles`, not `/amebogist/posts` (`ContentController`, not the previously-designed `AmebogistController`) — plus live-only additions `/amebogist/search`, `/amebogist/articles/generate-ai`, `/amebogist/articles/:id/video-factory`, `/amebogist/me/stats`. **Update this doc's §5 data-flow and §6 component descriptions to use `articles` instead of `posts` before any implementation work references it** — this is a real naming drift, not just a documentation nicety, since a frontend built against `/amebogist/posts` will 404.
+- `/amebogist/articles/generate-ai` and `/amebogist/articles/:id/video-factory` are **newly confirmed live** and not reflected anywhere in this doc's page/routing map or key-components table — these back an AI-assisted article generation flow and a video-factory feature (turning an article into short-form video, presumably feeding the `video-render`/`social-factory` queues documented in the service canonical §3.2) that has no current frontend surface. Given this doc's own UX audit already flags "no confirmed distinction between AI-summarized vs human-written posts" as an issue, `generate-ai` is directly relevant — the missing distinction may partly be because there's no UI yet for the AI-generation path at all.
+
+### Extensibility — reserving room for future pages
+
+- `/category/[slug]` and `/posts/[slug]` (rename consideration: see naming drift above — audit whether the route segment itself should become `/articles/[slug]` to match the backend, or whether `posts` as a frontend URL convention is intentionally kept distinct from the backend's `articles` resource name; don't assume either without confirming with whoever owns routing conventions) are the two extensible content routes. New content types (e.g. a video-factory output feed) should nest as a new top-level route (`/videos` or `/shorts`) rather than overloading `/posts/[slug]` with mixed content types.
+- `/dashboard` (creator) is currently just `/dashboard` + `/write`. Once `generate-ai`/`video-factory` get frontend surfaces, reserve `/write/generate` (AI-assisted draft) and `/write/[id]/video` (video-factory trigger + status) as the natural nesting points, keeping `/write` itself as the manual-authoring entry point.
+
+---
